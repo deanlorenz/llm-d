@@ -34,10 +34,28 @@ E.g., `workload-pvc`
   envsusbt <config_template.yaml > config.yaml
   ```
 
-Edit `config.yaml` if needed. Typically, you should be able to run it as is.  
+## Run
+
+  ```bash
+  ./run_only.sh -c config.yaml
+  ```
+
+The benchmarks will run and the resulted would be stored on the PVC.
+
+## Analyze Results
+
+TBD
+
+---
+
+# Advanced
+
+## Customizing the config file
+
+This section describes the details of the configuration `config.yaml` file. You may edit it as needed to match your stack (e.g., to change the model name). If you followed the guideline to create your stack then you should be able to run without any changes.   
 **Do not change** unless you know what you are doing.
 
-It is divided into sections, each with a different scope.
+The configuration is divided into sections, each with a different scope.
 
 ### Endpoint
 
@@ -188,14 +206,3 @@ Several workload can be specified, each with a different name. The benchmark wou
         local_storage:
           path: /workspace
   ```
-
-
-## Run
-
-  ```bash
-  ./run_only.sh -c config.yaml
-  ```
-
-The benchmarks will run and the resulted would be stored on the PVC.
-
-## 
