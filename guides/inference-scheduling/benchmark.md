@@ -17,6 +17,7 @@ For full, customizable benchmark, please refer to [llm-d-benchmark](https://gith
   export NAMESPACE=<Your namespace>
   export GATEWAY_SVC=$(
     kubectl get svc \
+    -n ${NAMESPACE}
     -l app.kubernetes.io/gateway=infra-inference-scheduling-inference-gateway \
     --no-headers  -o=custom-columns=:metadata.name
   )
@@ -37,7 +38,7 @@ PVC could be created via UI from cluster dashboard:
 ## Create a yaml configuration file for the benchmark
 
   ```bash
-  envsusbt <config_template.yaml > config.yaml
+  envsubst <config_template.yaml > config.yaml
   ```
 
 ## Run
@@ -50,6 +51,10 @@ The benchmarks will run and the resulted would be stored on the PVC.
 
 ## Analyze Results
 
+  ```bash
+  export HARNESS_POD=$(kubectl get pods -n ${NAMESPACE} -l app --show-labels | awk -v p='lmdbench-.*-launcher' '$0~p {print $1; exit}')
+  kubectl exec $HARNESS_POD -n $NAMESPACE -- ls /requests
+  ```
 TBD
 
 ---
