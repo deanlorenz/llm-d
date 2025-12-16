@@ -26,7 +26,13 @@ For full, customizable benchmark, please refer to [llm-d-benchmark](https://gith
 
 E.g., `workload-pvc`
 
-> TODO: add instructions on how to create a PVC. Must be RWX.
+PVC could be created via UI from cluster dashboard:
+1. Enter project, go to Storage->PersistentVolumeClaims
+2. Press `Create PersistentVolumeClaim`
+3. Choose preferred storage class, PVC name (`workload-pvc`), set Access Mode to RWX, choose Size = 200 GiB
+4. Press `Create` to finish the process
+
+> For more information about PVC creation please follow: https://docs.redhat.com/en/documentation/red_hat_openshift_container_storage/3.11/html/operations_guide/chap-documentation-red_hat_gluster_storage_container_native_with_openshift_platform-openshift_creating_persistent_volumes
 
 ## Create a yaml configuration file for the benchmark
 
