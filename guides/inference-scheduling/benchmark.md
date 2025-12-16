@@ -105,7 +105,7 @@ The benchmarking harness refers to the be
 
 ### Extra environment variables
 
-This sections allows you to add arbitrary environment variable to the harness pod. This is mostly useful to change behavior for a specific harness. For example, change the parallelism level.
+This sections allows you to add arbitrary environment variable to the harness pod. This is mostly useful to change behavior for a specific harness. For example, change the number of threads the Rust Rayon thread pool should use in inference-perf harness.
 
   ```yaml
   env:
