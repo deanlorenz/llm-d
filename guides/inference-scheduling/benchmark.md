@@ -17,7 +17,7 @@ For full, customizable benchmark, please refer to [llm-d-benchmark](https://gith
   export NAMESPACE=<Your namespace>
   export GATEWAY_SVC=$(
     kubectl get svc \
-    -n ${NAMESPACE}
+    -n ${NAMESPACE} \
     -l app.kubernetes.io/gateway=infra-inference-scheduling-inference-gateway \
     --no-headers  -o=custom-columns=:metadata.name
   )
