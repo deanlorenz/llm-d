@@ -146,22 +146,94 @@ To copy a results directory to your local machine use:
   kubectl cp ${NAMESPACE}/${HARNESS_POD}:/requests/<results-folder> <destination-path>
   ```
 
-For example, if `<destination-path>` is `/tmp/test` and `<results-folder>` is `inference-perf_1765274928_sanity_random_inference-scheduling-Qwen3-32B` then after copy we can list the results:
+For example, the `<results-folder>` named `inference-perf_1765442721_shared_prefix_synthetic_inference-scheduling-Qwen3-32B` indicates `inference-perf` was used as harness, the workload was `shared_prefix_synthetic` and the user-defined stack name was `inference-scheduling-Qwen3-32B`. After copying to `<destination-path>` at `/tmp/test`, we can list the results:
 
-```bash
-$ ls -ltn /tmp/test/
-total 136
--rw-r--r-- 1 1000 1000 92999 Dec 22 20:31 per_request_lifecycle_metrics.json
--rw-r--r-- 1 1000 1000   745 Dec 22 20:31 sanity_random.yaml
--rw-r--r-- 1 1000 1000  4474 Dec 22 20:31 stage_0_lifecycle_metrics.json
--rw-r--r-- 1 1000 1000  4367 Dec 22 20:31 summary_lifecycle_metrics.json
--rw-r--r-- 1 1000 1000  1208 Dec 22 20:31 config.yaml
--rw-r--r-- 1 1000 1000  2083 Dec 22 20:31 stderr.log
--rw-r--r-- 1 1000 1000  2834 Dec 22 20:31 stdout.log
--rw-r--r-- 1 1000 1000  4934 Dec 22 20:31 benchmark_report,_stage_0_lifecycle_metrics.json.yaml
-drwxr-xr-x 2 1000 1000  4096 Dec 22 20:31 analysis
-```
+  ```ls
+  $ ls -lnR /tmp/test
+  .:
+  total 131248
+  drwxr-xr-x 2 1000 1000      4096 Dec 22 21:46 analysis
+  -rw-r--r-- 1 1000 1000      5172 Dec 22 21:46 benchmark_report,_stage_0_lifecycle_metrics.json.yaml
+  -rw-r--r-- 1 1000 1000      5147 Dec 22 21:46 benchmark_report,_stage_1_lifecycle_metrics.json.yaml
+  -rw-r--r-- 1 1000 1000      5152 Dec 22 21:46 benchmark_report,_stage_2_lifecycle_metrics.json.yaml
+  -rw-r--r-- 1 1000 1000      5149 Dec 22 21:46 benchmark_report,_stage_3_lifecycle_metrics.json.yaml
+  -rw-r--r-- 1 1000 1000      5134 Dec 22 21:46 benchmark_report,_stage_4_lifecycle_metrics.json.yaml
+  -rw-r--r-- 1 1000 1000      5152 Dec 22 21:46 benchmark_report,_stage_5_lifecycle_metrics.json.yaml
+  -rw-r--r-- 1 1000 1000      5131 Dec 22 21:46 benchmark_report,_stage_6_lifecycle_metrics.json.yaml
+  -rw-r--r-- 1 1000 1000      1379 Dec 22 21:46 config.yaml
+  -rw-r--r-- 1 1000 1000 134211261 Dec 22 21:46 per_request_lifecycle_metrics.json
+  -rw-r--r-- 1 1000 1000       913 Dec 22 21:46 shared_prefix_synthetic.yaml
+  -rw-r--r-- 1 1000 1000      4503 Dec 22 21:46 stage_0_lifecycle_metrics.json
+  -rw-r--r-- 1 1000 1000      4482 Dec 22 21:46 stage_1_lifecycle_metrics.json
+  -rw-r--r-- 1 1000 1000      4484 Dec 22 21:46 stage_2_lifecycle_metrics.json
+  -rw-r--r-- 1 1000 1000      4487 Dec 22 21:46 stage_3_lifecycle_metrics.json
+  -rw-r--r-- 1 1000 1000      4469 Dec 22 21:46 stage_4_lifecycle_metrics.json
+  -rw-r--r-- 1 1000 1000      4488 Dec 22 21:46 stage_5_lifecycle_metrics.json
+  -rw-r--r-- 1 1000 1000      4470 Dec 22 21:46 stage_6_lifecycle_metrics.json
+  -rw-r--r-- 1 1000 1000     32786 Dec 22 21:46 stderr.log
+  -rw-r--r-- 1 1000 1000      5517 Dec 22 21:46 stdout.log
+  -rw-r--r-- 1 1000 1000      4372 Dec 22 21:46 summary_lifecycle_metrics.json
 
+  ./analysis:
+  total 272
+  -rw-r--r-- 1 1000 1000 90845 Dec 22 21:46 latency_vs_qps.png
+  -rw-r--r-- 1 1000 1000 92088 Dec 22 21:46 throughput_vs_latency.png
+  -rw-r--r-- 1 1000 1000 89975 Dec 22 21:46 throughput_vs_qps.png
+  ```
+
+In this example there are 6 workload stages. For each of these stages, there is a results `json` file in harness-specific format and a standardized benchmark `yaml` report in a harness-agnostic format. In this case, the inference-perf benchmark also creates a summary report and a (huge) detailed per-request report. The `analysis` would include plots of the same data.
+
+<details>
+
+<summary>Click for sample contents of <code>/tmp/test/shared_prefix_synthetic.yaml</code></summary>
+
+  ```yaml
+  load:
+    type: constant
+    stages:
+      - rate: 2
+        duration: 50
+      - rate: 5
+        duration: 50
+      - rate: 8
+        duration: 50
+      - rate: 10
+        duration: 50
+      - rate: 12
+        duration: 50
+      - rate: 15
+        duration: 50
+      - rate: 20
+        duration: 50
+  api:
+    type: completion
+    streaming: true
+  server:
+    type: vllm
+    model_name: Qwen/Qwen3-32B
+    base_url: http://infra-inference-scheduling-inference-gateway.dpikus-ns.svc.cluster.local:80
+    ignore_eos: true
+  tokenizer:
+    pretrained_model_name_or_path: Qwen/Qwen3-32B
+  data:
+    type: shared_prefix
+    shared_prefix:
+      num_groups: 32
+      num_prompts_per_group: 32
+      system_prompt_len: 2048
+      question_len: 256
+      output_len: 256
+  report:
+    request_lifecycle:
+      summary: true
+      per_stage: true
+      per_request: true
+  storage:
+    local_storage:
+      path: /requests/inference-perf_1765442721_shared_prefix_synthetic_inference-scheduling-Qwen3-32B
+  ```
+
+</details>
 <details>
 
 <summary>Click for sample contents of <code>/tmp/test/summary_lifecycle_metrics.json</code></summary>
@@ -170,145 +242,145 @@ drwxr-xr-x 2 1000 1000  4096 Dec 22 20:31 analysis
   $ cat /tmp/test/summary_lifecycle_metrics.json
   {
     "load_summary": {
-      "count": 30,
+      "count": 3600,
       "schedule_delay": {
-        "mean": 0.0009949469116691035,
-        "min": 5.5570453696418554e-05,
-        "p0.1": 6.324866517388727e-05,
-        "p1": 0.00013235256847110577,
-        "p5": 0.00032730887578509283,
-        "p10": 0.0003592936380300671,
-        "p25": 0.0006020650107529946,
-        "median": 0.000765682605560869,
-        "p75": 0.0011245777877775254,
-        "p90": 0.0014910372890881262,
-        "p95": 0.0016743282074457957,
-        "p99": 0.004784760244001521,
-        "p99.9": 0.005873430990723152,
-        "max": 0.005994394407025538
+        "mean": 0.0005517881022468726,
+        "min": -0.0009677917696535587,
+        "p0.1": -0.0009261268951522652,
+        "p1": -0.0006993622815934941,
+        "p5": -0.00036710660060634837,
+        "p10": -0.0001909452490508556,
+        "p25": 0.0001798685480025597,
+        "median": 0.0005617527785943821,
+        "p75": 0.0009258257632609457,
+        "p90": 0.0012554632412502542,
+        "p95": 0.0014667386640212496,
+        "p99": 0.001798744505795184,
+        "p99.9": 0.002180055778066162,
+        "max": 0.0024819674144964665
       }
     },
     "successes": {
-      "count": 30,
+      "count": 3600,
       "latency": {
         "request_latency": {
-          "mean": 0.6588773118998991,
-          "min": 0.1586868219965254,
-          "p0.1": 0.15869474296964473,
-          "p1": 0.15876603172771867,
-          "p5": 0.1589744984987192,
-          "p10": 0.1592453661025502,
-          "p25": 0.16611412924794422,
-          "median": 0.43602975699832314,
-          "p75": 1.3402625747512502,
-          "p90": 1.4376812317983423,
-          "p95": 1.4399501692012564,
-          "p99": 1.4428512091104495,
-          "p99.9": 1.4437475199112304,
-          "max": 1.4438471100002062
+          "mean": 5.018124350203054,
+          "min": 3.8039849390042946,
+          "p0.1": 3.8743090889458545,
+          "p1": 3.953152789860906,
+          "p5": 4.157410570966022,
+          "p10": 4.314808080092189,
+          "p25": 4.572383339735097,
+          "median": 4.921685875495314,
+          "p75": 5.447979573007615,
+          "p90": 5.874509802411194,
+          "p95": 6.23043658035167,
+          "p99": 6.898871109607862,
+          "p99.9": 7.155581975026522,
+          "max": 7.1762416810088325
         },
         "normalized_time_per_output_token": {
-          "mean": 0.01674332175508386,
-          "min": 0.014335748899975442,
-          "p0.1": 0.014336704613826077,
-          "p1": 0.014345306038481795,
-          "p5": 0.014371501398989494,
-          "p10": 0.014435703177000422,
-          "p25": 0.014619622932853567,
-          "median": 0.015881223829154016,
-          "p75": 0.016693644060641027,
-          "p90": 0.020294773005207392,
-          "p95": 0.02274349231242922,
-          "p99": 0.025181103562708813,
-          "p99.9": 0.02557737823157641,
-          "max": 0.02562140875033947
+          "mean": 0.03036492437930885,
+          "min": 0.007583161046942186,
+          "p0.1": 0.010184849169221934,
+          "p1": 0.015474372415765174,
+          "p5": 0.01634922173616652,
+          "p10": 0.01703432744081125,
+          "p25": 0.018072373271508013,
+          "median": 0.019470786924703526,
+          "p75": 0.02165297018970986,
+          "p90": 0.023846092055134705,
+          "p95": 0.0264264020348377,
+          "p99": 0.4516598727074727,
+          "p99.9": 0.5963934792099037,
+          "max": 1.7235658823337872
         },
         "time_per_output_token": {
-          "mean": 0.006559230440518787,
-          "min": 0.0060569573335149994,
-          "p0.1": 0.006057008771227889,
-          "p1": 0.006057471710643898,
-          "p5": 0.006063760290531458,
-          "p10": 0.006083691500021987,
-          "p25": 0.006124783118918588,
-          "median": 0.006748013784410417,
-          "p75": 0.00695824464904582,
-          "p90": 0.006978150976107795,
-          "p95": 0.006985430946021656,
-          "p99": 0.007002392395553935,
-          "p99.9": 0.007008618324614845,
-          "max": 0.007009310094510501
+          "mean": 0.009651459220661362,
+          "min": 0.007256438481493456,
+          "p0.1": 0.007323875762569309,
+          "p1": 0.007555858870462394,
+          "p5": 0.007952370352942776,
+          "p10": 0.008277119267264429,
+          "p25": 0.008787224616948537,
+          "median": 0.009469471096488253,
+          "p75": 0.010491207710992169,
+          "p90": 0.01131961066218535,
+          "p95": 0.012025573761348197,
+          "p99": 0.013288400162375152,
+          "p99.9": 0.013780982321925176,
+          "max": 0.013837818343071613
         },
         "time_to_first_token": {
-          "mean": 0.03326361546690653,
-          "min": 0.02732928300247295,
-          "p0.1": 0.02734817798135191,
-          "p1": 0.027518232791262563,
-          "p5": 0.02798178529847064,
-          "p10": 0.028100511400407414,
-          "p25": 0.02906892950340989,
-          "median": 0.03012613499959116,
-          "p75": 0.03321451375086326,
-          "p90": 0.03665650219700184,
-          "p95": 0.0515788085005624,
-          "p99": 0.06579398802816287,
-          "p99.9": 0.06834677500107504,
-          "max": 0.06863041799806524
+          "mean": 0.055621399055906094,
+          "min": 0.03300976799800992,
+          "p0.1": 0.03474102120747557,
+          "p1": 0.03800362152425805,
+          "p5": 0.04069916713197017,
+          "p10": 0.04262162119266577,
+          "p25": 0.0469227115099784,
+          "median": 0.05276561250502709,
+          "p75": 0.05953402600425761,
+          "p90": 0.06766136341320816,
+          "p95": 0.0781531358021311,
+          "p99": 0.1207716233390948,
+          "p99.9": 0.1945496345278814,
+          "max": 0.28962455500732176
         },
         "inter_token_latency": {
-          "mean": 0.006865140741710124,
-          "min": 1.5460027498193085e-06,
-          "p0.1": 1.661555506871082e-06,
-          "p1": 2.1122003818163647e-06,
-          "p5": 5.4873464250704275e-06,
-          "p10": 7.376601570285857e-06,
-          "p25": 1.510375295765698e-05,
-          "median": 4.050750067108311e-05,
-          "p75": 0.01413311349824653,
-          "p90": 0.014454104701144388,
-          "p95": 0.014726091798729612,
-          "p99": 0.016374180317507123,
-          "p99.9": 0.020914695926352915,
-          "max": 0.039189089999126736
+          "mean": 0.009651459220661362,
+          "min": 1.1920055840164423e-06,
+          "p0.1": 1.969980075955391e-06,
+          "p1": 4.66001802124083e-06,
+          "p5": 5.8680016081780195e-06,
+          "p10": 7.030001142993569e-06,
+          "p25": 1.3053999282419682e-05,
+          "median": 4.527249257080257e-05,
+          "p75": 0.018683608002902474,
+          "p90": 0.021172565198503433,
+          "p95": 0.023382977170695075,
+          "p99": 0.031130830741021784,
+          "p99.9": 0.05123655588901624,
+          "max": 0.164861869008746
         }
       },
       "throughput": {
-        "input_tokens_per_sec": 49.76859460193433,
-        "output_tokens_per_sec": 47.065738269461434,
-        "total_tokens_per_sec": 96.83433287139577,
-        "requests_per_sec": 1.08114253298916
+        "input_tokens_per_sec": 22133.556296544484,
+        "output_tokens_per_sec": 2253.085197994428,
+        "total_tokens_per_sec": 24386.64149453891,
+        "requests_per_sec": 9.129153381242592
       },
       "prompt_len": {
-        "mean": 46.03333333333333,
-        "min": 10.0,
-        "p0.1": 10.0,
-        "p1": 10.0,
-        "p5": 10.0,
-        "p10": 10.0,
-        "p25": 10.0,
-        "median": 10.0,
-        "p75": 108.0,
-        "p90": 108.4,
-        "p95": 112.0,
-        "p99": 112.0,
-        "p99.9": 112.0,
-        "max": 112.0
+        "mean": 2424.491666666667,
+        "min": 2387.0,
+        "p0.1": 2387.0,
+        "p1": 2390.0,
+        "p5": 2399.0,
+        "p10": 2403.0,
+        "p25": 2413.0,
+        "median": 2426.0,
+        "p75": 2435.0,
+        "p90": 2443.0,
+        "p95": 2450.0,
+        "p99": 2468.0,
+        "p99.9": 2474.0,
+        "max": 2474.0
       },
       "output_len": {
-        "mean": 43.53333333333333,
-        "min": 7.0,
-        "p0.1": 7.029,
-        "p1": 7.29,
-        "p5": 8.0,
-        "p10": 8.0,
-        "p25": 10.0,
-        "median": 27.0,
-        "p75": 85.5,
-        "p90": 99.1,
-        "p95": 100.0,
-        "p99": 100.0,
-        "p99.9": 100.0,
-        "max": 100.0
+        "mean": 246.8011111111111,
+        "min": 3.0,
+        "p0.1": 8.599,
+        "p1": 11.0,
+        "p5": 238.0,
+        "p10": 248.0,
+        "p25": 253.0,
+        "median": 255.0,
+        "p75": 256.0,
+        "p90": 256.0,
+        "p95": 256.0,
+        "p99": 257.0,
+        "p99.9": 511.0,
+        "max": 511.0
       }
     },
     "failures": {
@@ -316,7 +388,7 @@ drwxr-xr-x 2 1000 1000  4096 Dec 22 20:31 analysis
       "request_latency": null,
       "prompt_len": null
     }
-  }
+  }  
   ```
 
 </details>
