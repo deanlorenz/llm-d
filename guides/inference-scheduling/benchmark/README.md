@@ -12,37 +12,62 @@ For full, customizable benchmark, please refer to [llm-d-benchmark](https://gith
   curl -L -O https://github.com/dmitripikus/llm-d-benchmark/blob/well-lit-path/existing_stack/run_only.sh
   chmod u+x run_only.sh
   ```
-- **[inference_scheduling_template.yaml](config_template.yaml)** - benchmark configuration
+- **[inference_scheduling_template.yaml](inference_scheduling_template.yaml)** - benchmark configuration (available in `guides/inference-scheduling/benchmark/`)
 
 ## Setup the required environment variables
 
   ```bash
-  export NAMESPACE="<Your namespace>"
+  export NAMESPACE="<your namespace>"
   export GATEWAY_SVC_NAME=infra-inference-scheduling-inference-gateway
   export GATEWAY_SVC=$(
     kubectl get svc \
     -n ${NAMESPACE} \
-    -l app.kubernetes.io/${GATEWAY_SVC_NAME} \
+    -l gateway.networking.k8s.io/gateway-name=${GATEWAY_SVC_NAME} \
     --no-headers  -o=custom-columns=:metadata.name
   )
+  echo "using gateway service '${GATEWAY_SVC}' on namespace '${NAMESPACE}'"
   ```
 
-## Create a PVC to save your benchmark results
+## SEtup a PVC to save your benchmark results
 
-E.g., `workload-pvc`
+The benchmark results are stored in a Persistent Volume Claim (mounted by the benchmark launcher pod).  
+The PVC must have `RWX` write permissions and be large enough (`200Gi` recommended).  
+You need to let the benchmark know which PVC your are using (in this example `workload-pvc`):
 
-PVC could be created via UI from cluster dashboard:
-1. Enter project, go to Storage->PersistentVolumeClaims
-2. Press `Create PersistentVolumeClaim`
-3. Choose preferred storage class, PVC name (`workload-pvc`), set Access Mode to RWX, choose Size = 200 GiB
-4. Press `Create` to finish the process
+  ```bash
+  export BENCHMARK_PVC=workload-pvc
+  ```
 
-> For more information about PVC creation please follow: https://docs.redhat.com/en/documentation/red_hat_openshift_container_storage/3.11/html/operations_guide/chap-documentation-red_hat_gluster_storage_container_native_with_openshift_platform-openshift_creating_persistent_volumes
+If `workload-pvc` does not exist, create one with `RWX` permissions.
+
+  - 
+    <details>
+    <summary>Click to expand</summary>
+
+    ```yaml 
+    cat <<YAML | kubectl -n ${NAMESPACE} apply -f -
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: ${BENCHMARK_PVC}
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 200Gi
+      # storageClassName: <change the default storage class if needed>
+    YAML
+    ```
+
+    Alternatively, a PVC can be created via the UI of the cluster dashboard.
+
+    </details>
 
 ## Create a yaml configuration file for the benchmark
 
   ```bash
-  envsubst <config_template.yaml > config.yaml
+  envsubst < inference_scheduling_template.yaml > config.yaml
   ```
 
 ## Run
@@ -51,15 +76,20 @@ PVC could be created via UI from cluster dashboard:
   ./run_only.sh -c config.yaml
   ```
 
-The benchmarks will run and the resulted would be stored on the PVC.
+The benchmarks will create a launcher pod to run and the resulted would be stored on the PVC.  
+You can try running with different workload configuration. Just edit the `workload` section in `config.yaml` and rerun (for details, see [Advanced.workload](#workload) below).
 
 ## Analyze Results
 
+  You can access the results PVC through the benchmark launcher pod.
   ```bash
   export HARNESS_POD=$(kubectl get pods -n ${NAMESPACE} -l app --show-labels | awk -v p='lmdbench-.*-launcher' '$0~p {print $1; exit}')
   kubectl exec $HARNESS_POD -n $NAMESPACE -- ls /requests
   ```
+
 TBD
+- need an example of results showing where the graphs are located.
+- need an example of how to copy results to local computer (`k cp ...`)
 
 ---
 
