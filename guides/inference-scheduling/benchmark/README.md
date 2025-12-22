@@ -6,19 +6,23 @@ For full, customizable benchmark, please refer to [llm-d-benchmark](https://gith
 
 ## Requirements
 
-- **yq**: install version>=4
-- **run_only.sh**: [run_only.sh](https://raw.githubusercontent.com/dmitripikus/llm-d-benchmark/refs/heads/run_only/existing_stack/run_only.sh) - the main script
-- **function.sh**: [functions.sh](https://raw.githubusercontent.com/dmitripikus/llm-d-benchmark/refs/heads/run_only/existing_stack/functions.sh)
-- **config_template.yaml**: [config_template.yaml](https://raw.githubusercontent.com/dmitripikus/llm-d-benchmark/refs/heads/run_only/existing_stack/config_template.yaml) - configuration
+- **yq** - install version>=4
+- **[run_only.sh](https://github.com/dmitripikus/llm-d-benchmark/blob/well-lit-path/existing_stack/run_only.sh)** - download the benchmark script
+  ```bash
+  curl -L -O https://github.com/dmitripikus/llm-d-benchmark/blob/well-lit-path/existing_stack/run_only.sh
+  chmod u+x run_only.sh
+  ```
+- **[inference_scheduling_template.yaml](config_template.yaml)** - benchmark configuration
 
 ## Setup the required environment variables
 
   ```bash
-  export NAMESPACE=<Your namespace>
+  export NAMESPACE="<Your namespace>"
+  export GATEWAY_SVC_NAME=infra-inference-scheduling-inference-gateway
   export GATEWAY_SVC=$(
     kubectl get svc \
     -n ${NAMESPACE} \
-    -l app.kubernetes.io/gateway=infra-inference-scheduling-inference-gateway \
+    -l app.kubernetes.io/${GATEWAY_SVC_NAME} \
     --no-headers  -o=custom-columns=:metadata.name
   )
   ```
