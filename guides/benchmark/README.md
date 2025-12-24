@@ -7,7 +7,7 @@ For full, customizable benchmarking, please refer to [llm-d-benchmark](https://g
 
 ## Requirements
 
-- Install `yq` (YAML processor) - version>=4 (see [install-deps.sh](../guides/prereq/client-setup/install-deps.sh))
+- Install `yq` (YAML processor) - version>=4 (see [Clinet Setup](../prereq/client-setup/README.md))
 - Download the benchmark script [run_only.sh](https://github.com/dmitripikus/llm-d-benchmark/blob/well-lit-path/existing_stack/run_only.sh) and make it executable.
     ```bash
     curl -L -O https://raw.githubusercontent.com/dmitripikus/llm-d-benchmark/refs/tags/well-lit-path/existing_stack/run_only.sh
