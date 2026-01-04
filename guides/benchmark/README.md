@@ -11,7 +11,7 @@ For full, customizable benchmarking, please refer to [llm-d-benchmark](https://g
 - Install `yq` (YAML processor) - version>=4 (see [Clinet Setup](../prereq/client-setup/README.md))
 - Download the benchmark script [run_only.sh](https://github.com/dmitripikus/llm-d-benchmark/blob/well-lit-path/existing_stack/run_only.sh) and make it executable.
     ```bash
-    curl -L -O https://raw.githubusercontent.com/dmitripikus/llm-d-benchmark/refs/tags/well-lit-path/existing_stack/run_only.sh
+    curl -L -O https://raw.githubusercontent.com/dmitripikus/llm-d-benchmark/well-lit-path/existing_stack/run_only.sh
     chmod u+x run_only.sh
     ```
 - Prepare a Persistent Volume Claim (PVC) to store the benchmark results. The PVC must have `RWX` write permissions and be large enough (`200Gi` recommended).  
