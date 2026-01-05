@@ -8,10 +8,10 @@ For full, customizable benchmarking, please refer to [llm-d-benchmark](https://g
 ## Requirements
 
 - You are assumed to have deployed the llm-d inference stack from a guide, or otherwise followed the llm-d conventions for deployment.
-- Install `yq` (YAML processor) - version>=4 (see [Clinet Setup](../prereq/client-setup/README.md))
-- Download the benchmark script [run_only.sh](https://github.com/dmitripikus/llm-d-benchmark/blob/well-lit-path/existing_stack/run_only.sh) and make it executable.
+- Install `yq` (YAML processor) - version>=4 (see [Client Setup](../prereq/client-setup/README.md))
+- Download the benchmark script [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh) and make it executable.
     ```bash
-    curl -L -O https://raw.githubusercontent.com/dmitripikus/llm-d-benchmark/well-lit-path/existing_stack/run_only.sh
+    curl -L -O https://raw.githubusercontent.com/llm-d/llm-d-benchmark/main/existing_stack/run_only.sh
     chmod u+x run_only.sh
     ```
 - Prepare a Persistent Volume Claim (PVC) to store the benchmark results. The PVC must have `RWX` write permissions and be large enough (`200Gi` recommended).  
@@ -118,6 +118,11 @@ For full, customizable benchmarking, please refer to [llm-d-benchmark](https://g
 > </details>
 > </tr>
 > </table>
+
+Check your env:
+  ```bash
+  echo "Using NAMESPACE=${NAMESPACE:?Missing}, GATEWAY_SVC=${GATEWAY_SVC:?Missing}, BENCHMARK_PVC=${BENCHMARK_PVC:?Missing}, BENCHMARK_TEMPLATE=${BENCHMARK_TEMPLATE:?Missing}"
+  ```
 
 ## Run
 
@@ -798,7 +803,7 @@ These are the properties of the stack (`envsubst` would replace `NAMESPACE` and 
 ### Control
 
 These define the local target directory for temporary files and for fetching results.
-The `kubectl` entru allows you to change the k8s control command (e.g., to `oc`).
+The `kubectl` entry allows you to change the k8s control command (e.g., to `oc`).
 
   ```yaml
   control:
