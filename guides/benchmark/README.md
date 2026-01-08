@@ -502,7 +502,7 @@ The output files are saved on the benchmark PVC. They are accessible through the
 
 This example uses `inference-perf` with a [`shared-prefix`](./inference_scheduling_shared_prefix_template.yaml) workload:
   ```bash
-  export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/inference_scheduling_guidellm_template.yaml
+  export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/inference_scheduling_shared_prefix_template.yaml
   ```
 
 After running With this template, the `/requests` folder will include a `<results-folder>` named 
