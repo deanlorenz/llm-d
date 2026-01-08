@@ -269,3 +269,7 @@ kubectl delete -f httproute.yaml -n ${NAMESPACE}
 ## Customization
 
 For information on customizing a guide and tips to build your own, see [our docs](../../docs/customizing-a-guide.md)
+
+## Benchmarking
+
+To run benchmarking against installed llm-d stack checkout [benchmark doc](../benchmark/README.md).
