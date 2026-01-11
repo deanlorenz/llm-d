@@ -266,4 +266,4 @@ For information on customizing a guide and tips to build your own, see [our docs
 
 ## Benchmarking
 
-To run benchmarking against installed llm-d stack checkout [benchmark doc](../benchmark/README.md).
+To run benchmarks against the installed llm-d stack, follow the instructions in the [benchmark doc](../benchmark/README.md).
