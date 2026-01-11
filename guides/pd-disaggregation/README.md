@@ -209,3 +209,95 @@ For information on customizing a guide and tips to build your own, see [our docs
 ## Benchmarking
 
 To run benchmarks against the installed llm-d stack, follow the instructions in the [benchmark doc](../benchmark/README.md).
+
+### Example of Benchmark Results
+
+To reproduce this run, use the sample template [pd_vllm_bench_random_concurrent_template](../benchmark/pd_vllm_bench_random_concurrent_template.yaml). 
+The benchmark launches a pod (`llmdbench-harness-launcher`) that, in this case, uses `vllm-bench` with a random synthetic workload named `random_concurrent`. 
+The results will be stored under on the provided PVC, accessible through the `llmdbench-harness-launcher` pod. Each experiment is saved under the `requests` folder, e.g.,/`requests/vllm-benchmark_1768132208_random_concurrent_Qwen2-0.5B` folder (with `1768132208` replaced by an experiment ID). 
+
+Several results files will be created (see [Benchmark doc](../benchmark/README.md)), including a yaml file in a "standard" benchmark report format (see [Benchmark Report](https://github.com/llm-d/llm-d-benchmark/blob/main/docs/benchmark_report.md)).
+
+Here is an example of a benchmark_report for this run:
+  ```yaml
+  metrics:
+    latency:
+      inter_token_latency:
+        mean: 1.7027542555110875
+        p0p1: 0.005726298317313194
+        p1: 0.08259909227490425
+        p10: 1.5963684767484665
+        p5: 1.4918556436896324
+        p90: 1.7450897954404356
+        p95: 1.900194305926561
+        p99: 3.7971320003271103
+        p99p9: 4.350280856713653
+        stddev: 0.491742694784182
+        units: ms/token
+      request_latency:
+        mean: 2061.5178888838273
+        p0p1: 1799.0411128033884
+        p1: 1865.8342311391607
+        p10: 2044.959097262472
+        p5: 2034.0365397045389
+        p90: 2096.155120478943
+        p95: 2100.8053639205173
+        p99: 2122.9221803275873
+        p99p9: 2131.13206202304
+        stddev: 53.00134750612688
+        units: ms
+      time_per_output_token:
+        mean: 1.6655221995758918
+        p0p1: 1.6548033180908561
+        p1: 1.655552857364337
+        p10: 1.657608111255669
+        p5: 1.657460162600687
+        p50: 1.6634504793694727
+        p75: 1.6677861516312644
+        p90: 1.6712081555679843
+        p95: 1.678933067717128
+        p99: 1.6985431693641617
+        p99p9: 1.7042389566016323
+        stddev: 0.009151976293312795
+        units: ms/token
+      time_to_first_token:
+        mean: 397.6612115075113
+        p0p1: 132.28069308632985
+        p1: 201.22961815912277
+        p10: 380.79249653965235
+        p5: 376.0226161684841
+        p50: 403.82984187453985
+        p75: 422.16307553462684
+        p90: 426.5187329147011
+        p95: 428.2202695729211
+        p99: 456.76445202901965
+        p99p9: 468.13354993797856
+        stddev: 52.687202002113494
+        units: ms
+    requests:
+      input_length:
+        mean: 10000.0
+        units: count
+      output_length:
+        mean: 1000.0
+        units: count
+      total: 32
+    throughput:
+      output_tokens_per_sec: 484.96805257844136
+      requests_per_sec: 0.48496805257844133
+      total_tokens_per_sec: 5334.648578362855
+    time:
+      duration: 65.98372785560787
+      start: 1768132346.0
+  scenario:
+    load:
+      args:
+        burstiness: 1.0
+        max_concurrency: 1
+        num_prompts: 32
+        request_rate: inf
+      name: vllm-benchmark
+    model:
+      name: RedHatAI/Qwen2-0.5B-Instruct-FP8
+  version: '0.1'
+  ```
