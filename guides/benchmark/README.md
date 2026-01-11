@@ -88,6 +88,8 @@ For full, customizable benchmarking, please refer to [llm-d-benchmark](https://g
 >     | head -1
 >   )
 >   export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/pd_template.yaml
+>   #export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/pd_vllm_bench_random_concurrent_template.yaml
+>   #export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/pd_shared_prefix_template.yaml
 >   ```
 > 
 > </details>
