@@ -134,7 +134,7 @@ Create a yaml configuration file for the benchmark and run.
   ```
 
 The benchmarks will create a launcher pod to run and the resulted would be stored on the PVC.  
-You can try running with different workload configuration. Just edit the `workload` section in `config.yaml` and rerun (for details, see [Advanced.workload](#workload) below).
+You can try running with different workload configuration. Just edit the `workload` section in `config.yaml` and rerun (for details, see [Advanced.workload](README.md#workload) below).
 
 ## Analyze Results
 
