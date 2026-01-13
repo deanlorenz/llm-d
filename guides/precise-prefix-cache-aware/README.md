@@ -172,3 +172,261 @@ For information on customizing a guide and tips to build your own, see [our docs
 ## Benchmarking
 
 To run benchmarks against the installed llm-d stack, follow the instructions in the [benchmark doc](../benchmark/README.md).
+
+### Example
+  ```bash
+  export NAMESPACE=dpikus-precise
+  export BENCHMARK_PVC=workload-pvc
+  export GATEWAY_SVC=infra-kv-events-inference-gateway-istio
+  export BENCH_TEMPLATE_DIR=./guides/benchmark
+  export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/precise_guidellm_template.yaml
+  ```
+
+After that run the command
+  ```bash
+  envsubst < ${BENCHMARK_TEMPLATE} > config.yaml
+  ./run_only.sh -c config.yaml
+  ```
+
+  The results from GuideLLM run are:
+
+```  
+ℹ Run Summary Info
+|===========|==========|==========|======|======|======|=========|======|=====|=========|=====|=====|
+| Benchmark | Timings                              ||||| Input Tokens       ||| Output Tokens     |||
+| Strategy  | Start    | End      | Dur  | Warm | Cool | Comp    | Inc  | Err | Comp    | Inc | Err |
+|           |          |          | Sec  | Sec  | Sec  | Tot     | Tot  | Tot | Tot     | Tot | Tot |
+|-----------|----------|----------|------|------|------|---------|------|-----|---------|-----|-----|
+| constant  | 16:10:58 | 16:11:28 | 30.0 | 0.0  | 0.0  | 1450.0  | 0.0  | 0.0 | 1450.0  | 0.0 | 0.0 |
+| constant  | 16:11:30 | 16:12:00 | 30.0 | 0.0  | 0.0  | 7450.0  | 0.0  | 0.0 | 7450.0  | 0.0 | 0.0 |
+| constant  | 16:12:01 | 16:12:31 | 30.0 | 0.0  | 0.0  | 14900.0 | 50.0 | 0.0 | 14900.0 | 0.0 | 0.0 |
+|===========|==========|==========|======|======|======|=========|======|=====|=========|=====|=====|
+
+
+ℹ Text Metrics Statistics (Completed Requests)
+|===========|=======|======|=======|========|=======|======|=======|========|=======|=======|========|========|
+| Benchmark | Input Tokens               |||| Input Words                |||| Input Characters             ||||
+| Strategy  | Per Request || Per Second    || Per Request || Per Second    || Per Request  || Per Second     ||
+|           | Mdn   | p95  | Mdn   | Mean   | Mdn   | p95  | Mdn   | Mean   | Mdn   | p95   | Mdn    | Mean   |
+|-----------|-------|------|-------|--------|-------|------|-------|--------|-------|-------|--------|--------|
+| constant  | 50.0  | 50.0 | 50.0  | 51.8   | 41.0  | 43.0 | 41.0  | 42.4   | 267.0 | 286.0 | 268.6  | 278.3  |
+| constant  | 50.0  | 50.0 | 250.1 | 288.7  | 41.0  | 42.0 | 204.3 | 234.8  | 262.0 | 287.0 | 1310.7 | 1515.5 |
+| constant  | 50.0  | 50.0 | 500.0 | 1468.7 | 40.0  | 42.0 | 401.5 | 1188.1 | 261.0 | 286.0 | 2584.3 | 7676.5 |
+|===========|=======|======|=======|========|=======|======|=======|========|=======|=======|========|========|
+| Benchmark | Output Tokens              |||| Output Words               |||| Output Characters            ||||
+| Strategy  | Per Request || Per Second    || Per Request || Per Second    || Per Request  || Per Second     ||
+|           | Mdn   | p95  | Mdn   | Mean   | Mdn   | p95  | Mdn   | Mean   | Mdn   | p95   | Mdn    | Mean   |
+|-----------|-------|------|-------|--------|-------|------|-------|--------|-------|-------|--------|--------|
+| constant  | 50.0  | 50.0 | 50.0  | 51.8   | 40.0  | 45.0 | 40.0  | 39.7   | 200.0 | 257.0 | 197.0  | 204.2  |
+| constant  | 50.0  | 50.0 | 250.1 | 288.7  | 41.0  | 47.0 | 203.9 | 224.9  | 206.0 | 281.0 | 1040.9 | 1171.1 |
+| constant  | 50.0  | 50.0 | 500.0 | 1468.7 | 41.0  | 47.0 | 403.9 | 1122.5 | 203.0 | 260.0 | 1976.1 | 5790.5 |
+|===========|=======|======|=======|========|=======|======|=======|========|=======|=======|========|========|
+
+
+ℹ Request Token Statistics (Completed Requests)
+|===========|======|======|======|======|=======|=======|=======|=======|=========|========|
+| Benchmark | Input Tok  || Output Tok || Total Tok    || Stream Iter  || Output Tok      ||
+| Strategy  | Per Req    || Per Req    || Per Req      || Per Req      || Per Stream Iter ||
+|           | Mdn  | p95  | Mdn  | p95  | Mdn   | p95   | Mdn   | p95   | Mdn     | p95    |
+|-----------|------|------|------|------|-------|-------|-------|-------|---------|--------|
+| constant  | 50.0 | 50.0 | 50.0 | 50.0 | 100.0 | 100.0 | 102.0 | 104.0 | 1.0     | 1.1    |
+| constant  | 50.0 | 50.0 | 50.0 | 50.0 | 100.0 | 100.0 | 102.0 | 104.0 | 1.0     | 1.1    |
+| constant  | 50.0 | 50.0 | 50.0 | 50.0 | 100.0 | 100.0 | 104.0 | 104.0 | 1.0     | 1.0    |
+|===========|======|======|======|======|=======|=======|=======|=======|=========|========|
+
+
+ℹ Request Latency Statistics (Completed Requests)
+|===========|=========|========|======|======|=====|=====|=====|=====|
+| Benchmark | Request Latency || TTFT       || ITL      || TPOT     ||
+| Strategy  | Sec             || ms         || ms       || ms       ||
+|           | Mdn     | p95    | Mdn  | p95  | Mdn | p95 | Mdn | p95 |
+|-----------|---------|--------|------|------|-----|-----|-----|-----|
+| constant  | 0.1     | 0.1    | 15.8 | 19.8 | 2.2 | 2.3 | 2.5 | 2.6 |
+| constant  | 0.1     | 0.2    | 12.1 | 19.8 | 2.2 | 2.8 | 2.4 | 3.1 |
+| constant  | 0.3     | 0.3    | 25.5 | 61.1 | 5.3 | 6.5 | 6.1 | 6.9 |
+|===========|=========|========|======|======|=====|=====|=====|=====|
+
+
+ℹ Server Throughput Statistics
+|===========|=====|======|=======|======|=======|========|=======|========|=======|========|
+| Benchmark | Requests               |||| Input Tokens  || Output Tokens || Total Tokens  ||
+| Strategy  | Per Sec   || Concurrency || Per Sec       || Per Sec       || Per Sec       ||
+|           | Mdn | Mean | Mdn   | Mean | Mdn   | Mean   | Mdn   | Mean   | Mdn   | Mean   |
+|-----------|-----|------|-------|------|-------|--------|-------|--------|-------|--------|
+| constant  | 1.0 | 1.0  | 0.0   | 0.1  | 50.0  | 51.8   | 2.3   | 51.6   | 112.9 | 103.1  |
+| constant  | 5.0 | 5.0  | 1.0   | 0.6  | 250.0 | 288.5  | 442.7 | 287.4  | 451.5 | 574.7  |
+| constant  | 0.1 | 9.9  | 0.0   | 2.5  | 500.5 | 1440.5 | 448.0 | 1425.1 | 448.0 | 2850.3 |
+|===========|=====|======|=======|======|=======|========|=======|========|=======|========|
+
+```
+
+Benchmarking Report (for rate=5):
+  ```yaml
+  metrics:
+    latency:
+      inter_token_latency:
+        max: 2.8968051988251355
+        mean: 2.266296702302526
+        min: 2.0669625729930643
+        mode: 2.224036625453404
+        p0p1: 2.0669625729930643
+        p1: 2.0714341377725405
+        p10: 2.1386779084497567
+        p25: 2.16323015641193
+        p5: 2.12330234294035
+        p50: 2.224036625453404
+        p75: 2.2419082875154457
+        p90: 2.7029173714773997
+        p95: 2.8220488100635763
+        p99: 2.8944112816635443
+        p99p9: 2.8968051988251355
+        stddev: 0.1888687167084799
+        units: ms/token
+      request_latency:
+        max: 0.16229867935180664
+        mean: 0.12442724816751159
+        min: 0.1169126033782959
+        mode: 0.12063169479370117
+        p0p1: 0.1169126033782959
+        p1: 0.11745572090148926
+        p10: 0.11835432052612305
+        p25: 0.119232177734375
+        p5: 0.11796379089355469
+        p50: 0.12030243873596191
+        p75: 0.12152981758117676
+        p90: 0.14955878257751465
+        p95: 0.15656781196594238
+        p99: 0.16179728507995605
+        p99p9: 0.16229867935180664
+        stddev: 0.01149985833529716
+        units: ms
+      time_per_output_token:
+        max: 3.24312686920166
+        mean: 2.4851865576417653
+        min: 2.3328113555908203
+        mode: 2.3328113555908203
+        p0p1: 2.3328113555908203
+        p1: 2.3458051681518555
+        p10: 2.3644018173217773
+        p25: 2.3810243606567383
+        p5: 2.3552989959716797
+        p50: 2.4030351638793945
+        p75: 2.427539825439453
+        p90: 2.988924980163574
+        p95: 3.1288528442382812
+        p99: 3.232693672180176
+        p99p9: 3.24312686920166
+        stddev: 0.2300663268959325
+        units: ms/token
+      time_to_first_token:
+        max: 23.354291915893555
+        mean: 13.210789469264498
+        min: 9.773492813110352
+        mode: 9.773492813110352
+        p0p1: 9.773492813110352
+        p1: 10.175943374633789
+        p10: 10.506391525268555
+        p25: 11.036157608032227
+        p5: 10.413408279418945
+        p50: 12.093305587768555
+        p75: 14.092445373535156
+        p90: 18.43094825744629
+        p95: 19.814729690551758
+        p99: 22.95851707458496
+        p99p9: 23.354291915893555
+        stddev: 2.977245302854723
+        units: ms
+    requests:
+      failures: 0
+      incomplete: 0
+      input_length:
+        max: 50.0
+        mean: 50.0
+        min: 50.0
+        mode: 50.0
+        p0p1: 50.0
+        p1: 50.0
+        p10: 50.0
+        p25: 50.0
+        p5: 50.0
+        p50: 50.0
+        p75: 50.0
+        p90: 50.0
+        p95: 50.0
+        p99: 50.0
+        p99p9: 50.0
+        stddev: 0.0
+        units: count
+      output_length:
+        max: 50.0
+        mean: 50.0
+        min: 50.0
+        mode: 50.0
+        p0p1: 50.0
+        p1: 50.0
+        p10: 50.0
+        p25: 50.0
+        p5: 50.0
+        p50: 50.0
+        p75: 50.0
+        p90: 50.0
+        p95: 50.0
+        p99: 50.0
+        p99p9: 50.0
+        stddev: 0.0
+        units: count
+      total: 149
+    throughput:
+      output_tokens_per_sec: 287.3587596346145
+      requests_per_sec: 4.966666666666667
+      total_tokens_per_sec: 574.7175192692264
+    time:
+      duration: 30.0
+      start: 1768320690.3882165
+      stop: 1768320720.3882165
+  scenario:
+    load:
+      args:
+        backend: openai_http
+        backend_kwargs: null
+        cooldown: null
+        data:
+        - '{''prompt_tokens'': 50, ''output_tokens'': 50}'
+        data_args: []
+        data_collator: generative
+        data_column_mapper: generative_column_mapper
+        data_num_workers: 1
+        data_request_formatter: text_completions
+        data_sampler: null
+        data_samples: -1
+        dataloader_kwargs: null
+        max_error_rate: null
+        max_errors: null
+        max_global_error_rate: null
+        max_requests: null
+        max_seconds: 30
+        model: Qwen/Qwen3-0.6B
+        output_dir: /requests/guidellm_1768320625_rate_comparison_precise-Qwen3-0.6B
+        outputs:
+        - results.json
+        over_saturation: null
+        prefer_response_metrics: true
+        processor: null
+        processor_args: null
+        profile: constant
+        rampup: 0.0
+        random_seed: 42
+        rate:
+        - 1.0
+        - 5.0
+        - 10.0
+        sample_requests: 10
+        target: http://infra-kv-events-inference-gateway-istio.dpikus-precise.svc.cluster.local:80
+        warmup: null
+      metadata:
+        stage: 1
+      name: guidellm
+    model:
+      name: Qwen/Qwen3-0.6B
+  version: '0.1'
+  ```
