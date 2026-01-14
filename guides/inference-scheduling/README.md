@@ -267,3 +267,267 @@ For information on customizing a guide and tips to build your own, see [our docs
 ## Benchmarking
 
 To run benchmarks against the installed llm-d stack, follow the instructions in the [benchmark doc](../benchmark/README.md).
+
+### Example
+  ```bash
+  export NAMESPACE=dpikus-intel-inf
+  export BENCHMARK_PVC=workload-pvc
+  export GATEWAY_SVC=infra-inference-scheduling-inference-gateway-istio
+  export BENCH_TEMPLATE_DIR=./guides/benchmark
+  export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/inference_scheduling_shared_prefix_template.yaml
+  ```
+
+After that run the command
+  ```bash
+  envsubst < ${BENCHMARK_TEMPLATE} > config.yaml
+  ./run_only.sh -c config.yaml
+  ```
+
+  The results from inference-perf run are:
+
+  ```
+  ...
+  2026-01-14 12:58:15,472 - inference_perf.client.filestorage.local - INFO - Report files will be stored at: /requests/inference-perf_1768395442_shared_prefix_synthetic_inference-scheduling-Qwen3-0.6B
+  2026-01-14 12:58:18,414 - inference_perf.loadgen.load_generator - INFO - Stage 0 - run started
+  Stage 0 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.06s/it] 
+  2026-01-14 12:59:10,503 - inference_perf.loadgen.load_generator - INFO - Stage 0 - run completed
+  2026-01-14 12:59:11,504 - inference_perf.loadgen.load_generator - INFO - Stage 1 - run started
+  Stage 1 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.05s/it]   
+  2026-01-14 13:00:03,566 - inference_perf.loadgen.load_generator - INFO - Stage 1 - run completed
+  2026-01-14 13:00:04,569 - inference_perf.loadgen.load_generator - INFO - Stage 2 - run started
+  Stage 2 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.05s/it]   
+  2026-01-14 13:00:56,620 - inference_perf.loadgen.load_generator - INFO - Stage 2 - run completed
+  Stage 3 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]2026-01-14 13:00:57,621 - inference_perf.loadgen.load_generator - INFO - Stage 3 - run started
+  Stage 3 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.14s/it]  2026-01-14 13:01:49,675 - inference_perf.loadgen.load_generator - INFO - Stage 3 - run completed
+  Stage 3 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.05s/it]
+  2026-01-14 13:01:50,677 - inference_perf.loadgen.load_generator - INFO - Stage 4 - run started
+  Stage 4 progress:  98%|█████████▊| 0.975/1.0 [00:51<00:01, 53.81s/it]2026-01-14 13:02:42,726 - inference_perf.loadgen.load_generator - INFO - Stage 4 - run completed
+  Stage 4 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.05s/it]  
+  2026-01-14 13:02:43,727 - inference_perf.loadgen.load_generator - INFO - Stage 5 - run started
+  Stage 5 progress:  98%|█████████▊| 0.976/1.0 [00:51<00:01, 47.18s/it]             2026-01-14 13:03:35,770 - inference_perf.loadgen.load_generator - INFO - Stage 5 - run completed
+  Stage 5 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.04s/it]  
+  2026-01-14 13:03:36,771 - inference_perf.loadgen.load_generator - INFO - Stage 6 - run started
+  Stage 6 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.05s/it]   
+  2026-01-14 13:04:28,826 - inference_perf.loadgen.load_generator - INFO - Stage 6 - run completed
+  2026-01-14 13:04:29,932 - inference_perf.reportgen.base - INFO - Generating Reports...
+  ...
+  ```
+
+  Benchmarking Report (for rate=10):
+
+  ```
+  metrics:
+    latency:
+      inter_token_latency:
+        max: 0.05777170229703188
+        mean: 0.0028540196591486065
+        min: 4.38326969742775e-06
+        p0p1: 4.994813352823258e-06
+        p1: 0.0002613391727209091
+        p10: 0.0023753787390887737
+        p25: 0.0025633699260652065
+        p5: 0.0020118332467973232
+        p50: 0.0027567152865231037
+        p75: 0.0030960491858422756
+        p90: 0.0035414122976362705
+        p95: 0.003907579928636551
+        p99: 0.005562575720250604
+        p99p9: 0.007995677366852985
+        units: s/token
+      normalized_time_per_output_token:
+        max: 0.7239119322039187
+        mean: 0.013230468383828011
+        min: 0.0012901967719534603
+        p0p1: 0.0013735272390653008
+        p1: 0.002475093616671815
+        p10: 0.002669081147359975
+        p25: 0.002781771464626337
+        p5: 0.0025888777642649073
+        p50: 0.0030131658049867838
+        p75: 0.003294003644896293
+        p90: 0.05602821090935993
+        p95: 0.08938193067442622
+        p99: 0.09968416544550564
+        p99p9: 0.4370293470854131
+        units: s/token
+      request_latency:
+        max: 0.9693497093394399
+        mean: 0.7592659112159162
+        min: 0.6293312991037965
+        p0p1: 0.6321117059849203
+        p1: 0.6379123754054308
+        p10: 0.6786826994735747
+        p25: 0.7066267926711589
+        p5: 0.6639299782225863
+        p50: 0.7455745704937726
+        p75: 0.8018235113704577
+        p90: 0.8615147506818176
+        p95: 0.8907231074757874
+        p99: 0.9520903471671045
+        p99p9: 0.9693295779344626
+        units: s
+      time_per_output_token:
+        max: 0.0036182620824547485
+        mean: 0.0028531568113432273
+        min: 0.002386520749756268
+        p0p1: 0.0023887520123694445
+        p1: 0.002406616739970671
+        p10: 0.002551740905867373
+        p25: 0.002654319440489598
+        p5: 0.002492177187595631
+        p50: 0.002806923320160422
+        p75: 0.0030105473229014024
+        p90: 0.003242099913000215
+        p95: 0.0033541438971445257
+        p99: 0.0035732898914102407
+        p99p9: 0.0036182615814177553
+        units: s/token
+      time_to_first_token:
+        max: 0.04281094064936042
+        mean: 0.022396996933966875
+        min: 0.01594797894358635
+        p0p1: 0.01681194866169244
+        p1: 0.01792819821741432
+        p10: 0.01954832240007818
+        p25: 0.02079031872563064
+        p5: 0.019093053368851542
+        p50: 0.022028648993000388
+        p75: 0.023641378502361476
+        p90: 0.025527860410511496
+        p95: 0.026530779246240855
+        p99: 0.03026527327019721
+        p99p9: 0.03792530749272588
+        units: s
+    requests:
+      failures: 0
+      input_length:
+        max: 2468.0
+        mean: 2430.7
+        min: 2391.0
+        p0p1: 2391.499
+        p1: 2394.0
+        p10: 2409.0
+        p25: 2418.0
+        p5: 2403.95
+        p50: 2429.0
+        p75: 2444.25
+        p90: 2454.0
+        p95: 2458.0
+        p99: 2462.0
+        p99p9: 2466.503
+        units: count
+      output_length:
+        max: 510.0
+        mean: 228.03
+        min: 1.0
+        p0p1: 2.996
+        p1: 8.0
+        p10: 13.0
+        p25: 255.0
+        p5: 8.0
+        p50: 256.0
+        p75: 256.0
+        p90: 256.0
+        p95: 257.0
+        p99: 268.50999999999954
+        p99p9: 509.00200000000007
+        units: count
+      total: 500
+    throughput:
+      output_tokens_per_sec: 2254.4490015619667
+      requests_per_sec: 9.88663334456855
+      total_tokens_per_sec: 26285.888672204743
+    time:
+      duration: 49.86801022803411
+  scenario:
+    load:
+      args:
+        api:
+          headers: null
+          streaming: true
+          type: completion
+        circuit_breakers: null
+        data:
+          input_distribution: null
+          output_distribution: null
+          path: null
+          shared_prefix:
+            enable_multi_turn_chat: false
+            num_groups: 32
+            num_prompts_per_group: 32
+            output_len: 256
+            question_len: 256
+            system_prompt_len: 2048
+          trace: null
+          type: shared_prefix
+        load:
+          circuit_breakers: []
+          interval: 1.0
+          num_workers: 224
+          request_timeout: null
+          stages:
+          - concurrency_level: null
+            duration: 50
+            num_requests: null
+            rate: 2.0
+          - concurrency_level: null
+            duration: 50
+            num_requests: null
+            rate: 5.0
+          - concurrency_level: null
+            duration: 50
+            num_requests: null
+            rate: 8.0
+          - concurrency_level: null
+            duration: 50
+            num_requests: null
+            rate: 10.0
+          - concurrency_level: null
+            duration: 50
+            num_requests: null
+            rate: 12.0
+          - concurrency_level: null
+            duration: 50
+            num_requests: null
+            rate: 15.0
+          - concurrency_level: null
+            duration: 50
+            num_requests: null
+            rate: 20.0
+          sweep: null
+          trace: null
+          type: constant
+          worker_max_concurrency: 100
+          worker_max_tcp_connections: 2500
+        metrics: null
+        report:
+          prometheus:
+            per_stage: false
+            summary: true
+          request_lifecycle:
+            per_request: true
+            per_stage: true
+            summary: true
+        server:
+          api_key: null
+          base_url: http://infra-inference-scheduling-inference-gateway-istio.dpikus-intel-inf.svc.cluster.local:80
+          ignore_eos: true
+          model_name: Qwen/Qwen3-0.6B
+          type: vllm
+        storage:
+          google_cloud_storage: null
+          local_storage:
+            path: /requests/inference-perf_1768395442_shared_prefix_synthetic_inference-scheduling-Qwen3-0.6B
+            report_file_prefix: null
+          simple_storage_service: null
+        tokenizer:
+          pretrained_model_name_or_path: Qwen/Qwen3-0.6B
+          token: null
+          trust_remote_code: null
+      metadata:
+        stage: 3
+      name: inference-perf
+    model:
+      name: unknown
+  version: '0.1'
+  ```
