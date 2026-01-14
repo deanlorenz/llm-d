@@ -266,20 +266,37 @@ For information on customizing a guide and tips to build your own, see [our docs
 
 ## Benchmarking
 
-To run benchmarks against the installed llm-d stack, follow the instructions in the [benchmark doc](../benchmark/README.md).
+To run benchmarks against the installed llm-d stack, you need [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh), a template file from [guides/benchmark](../benchmark/), and a Persistent Volume Claim (PVC) to store the results. Follow the instructions in the [benchmark doc](../benchmark/README.md). 
 
 ### Example
+
+This example uses [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh) with the template [precise_guidellm_template.yaml](../benchmark/inference_scheduling_shared_prefix_template.yaml).
+
+
   ```bash
-  export NAMESPACE=dpikus-intel-inf
-  export BENCHMARK_PVC=workload-pvc
-  export GATEWAY_SVC=infra-inference-scheduling-inference-gateway-istio
-  export BENCH_TEMPLATE_DIR=./guides/benchmark
-  export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/inference_scheduling_shared_prefix_template.yaml
+  curl -L -O https://raw.githubusercontent.com/llm-d/llm-d-benchmark/main/existing_stack/run_only.sh
+  chmod u+x run_only.sh
+  LLMD_BRANCH=11ef16b
+  select f in $(
+      curl -s https://api.github.com/repos/llm-d/llm-d/contents/guides/benchmark?ref=${LLMD_BRANCH} | 
+      sed -n '/[[:space:]]*"name":[[:space:]][[:space:]]*"\(inference_scheduling.*\_template\.yaml\)".*/ s//\1/p'
+    ); do 
+    curl -LJO "https://raw.githubusercontent.com/llm-d/llm-d/${LLMD_BRANCH}/guides/benchmark/$f"
+    break
+  done
+  ```
+  
+  Choose the `inference_scheduling_shared_prefix_template.yaml` template, then run:
+
+  ```bash
+  export NAMESPACE=dpikus-intel-inf     # replace with your namespace
+  export BENCHMARK_PVC=workload-pvc   # replace with your PVC name
+  export GATEWAY_SVC=infra-inference-scheduling-inference-gateway-istio  # replace with your exact service name
   ```
 
 After that run the command
   ```bash
-  envsubst < ${BENCHMARK_TEMPLATE} > config.yaml
+  envsubst < inference_scheduling_shared_prefix_template.yaml > config.yaml
   ./run_only.sh -c config.yaml
   ```
 
