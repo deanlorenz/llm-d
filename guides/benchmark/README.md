@@ -88,6 +88,8 @@ For full, customizable benchmarking, please refer to [llm-d-benchmark](https://g
 >     | head -1
 >   )
 >   export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/pd_template.yaml
+>   #export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/pd_vllm_bench_random_concurrent_template.yaml
+>   #export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/pd_shared_prefix_template.yaml
 >   ```
 > 
 > </details>
@@ -117,6 +119,25 @@ For full, customizable benchmarking, please refer to [llm-d-benchmark](https://g
 > TBD
 > 
 > </details>
+> </tr>
+> <tr>
+> <td>
+> <details>
+> <summary><b>Precise Prefix Caching</b></summary>
+>
+>   ```bash
+>   export GATEWAY_SVC=$(kubectl get svc -n "${NAMESPACE}" \
+>     -l gateway.networking.k8s.io/gateway-name=infra-kv-events-inference-gateway \
+>     --no-headers  -o=custom-columns=:metadata.name \
+>     | head -1
+>   )
+>   export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/precise_template.yaml
+>   # export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/precise_guidellm_template.yaml
+>   # export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/precise_shared_prefix_template.yaml
+>   ```
+>
+> </details>
+> </td>
 > </tr>
 > </table>
 
