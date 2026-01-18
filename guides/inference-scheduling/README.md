@@ -294,7 +294,7 @@ This example uses [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/ma
   export GATEWAY_SVC=infra-inference-scheduling-inference-gateway-istio  # replace with your exact service name
   ```
 
-After that run the command
+After that, run the command
   ```bash
   envsubst < inference_scheduling_shared_prefix_template.yaml > config.yaml
   ./run_only.sh -c config.yaml
@@ -332,7 +332,7 @@ After that run the command
 
   Benchmarking Report (for rate=10):
 
-  ```
+  ```yaml
   metrics:
     latency:
       inter_token_latency:
