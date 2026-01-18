@@ -16,7 +16,7 @@ harness:
   results_pvc: ${BENCHMARK_PVC}   # PVC where benchmark results are stored
   namespace: *namespace           # Namespace where harness is deployed. Typically with stack.
   parallelism: 1                  # Number of parallel workload launcher pods to create.  
-  wait_timeout: 600               # Time (in seconds) to wait for workload launcher pod to complete before terminating.
+  wait_timeout: 6000              # Time (in seconds) to wait for workload launcher pod to complete before terminating.
                                   # Set to 0 to disable timeout.
   image: ghcr.io/llm-d/llm-d-benchmark:v0.4.0
   # dataset_url: &dataset_url none
@@ -26,14 +26,26 @@ env:
     value: "4"
 
 workload:                         # yaml configuration for harness workload(s)
-  
-  # an example workload using random synthetic data
-  sanity_random:
+
+  # an example workload using shared prefix synthetic data
+  shared_prefix_synthetic:
     load:
       type: constant
       stages:
-      - rate: 1
-        duration: 30
+      - rate: 2
+        duration: 50
+      - rate: 5
+        duration: 50
+      - rate: 8
+        duration: 50
+      - rate: 10
+        duration: 50
+      - rate: 12
+        duration: 50
+      - rate: 15
+        duration: 50
+      - rate: 20
+        duration: 50
     api:
       type: completion
       streaming: true
@@ -45,19 +57,13 @@ workload:                         # yaml configuration for harness workload(s)
     tokenizer:
       pretrained_model_name_or_path: *model
     data:
-      type: random
-      input_distribution:
-        min: 10             # min length of the synthetic prompts
-        max: 100            # max length of the synthetic prompts
-        mean: 50            # mean length of the synthetic prompts
-        std: 10             # standard deviation of the length of the synthetic prompts
-        total_count: 100    # total number of prompts to generate to fit the above mentioned distribution constraints
-      output_distribution:
-        min: 10             # min length of the output to be generated
-        max: 100            # max length of the output to be generated
-        mean: 50            # mean length of the output to be generated
-        std: 10             # standard deviation of the length of the output to be generated
-        total_count: 100    # total number of output lengths to generate to fit the above mentioned distribution constraints
+      type: shared_prefix
+      shared_prefix:
+        num_groups: 32                # Number of distinct shared prefixes
+        num_prompts_per_group: 32     # Number of unique questions per shared prefix
+        system_prompt_len: 2048       # Length of the shared prefix (in tokens)
+        question_len: 10000           # Length of the unique question part (in tokens)
+        output_len: 1000              # Target length for the model's generated output (in tokens)
     report:
       request_lifecycle:
         summary: true
