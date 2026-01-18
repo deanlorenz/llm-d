@@ -225,12 +225,11 @@ Several results files will be created (see [Benchmark doc](../benchmark/README.m
   ```bash
   curl -L -O https://raw.githubusercontent.com/llm-d/llm-d-benchmark/main/existing_stack/run_only.sh
   chmod u+x run_only.sh
-  LLMD_BRANCH=847c8b1
   select f in $(
-      curl -s https://api.github.com/repos/llm-d/llm-d/contents/guides/benchmark?ref=${LLMD_BRANCH} | 
+      curl -s https://api.github.com/repos/llm-d/llm-d/contents/guides/benchmark?ref=main | 
       sed -n '/[[:space:]]*"name":[[:space:]][[:space:]]*"\(pd.*\_template\.yaml\)".*/ s//\1/p'
     ); do 
-    curl -LJO "https://raw.githubusercontent.com/llm-d/llm-d/${LLMD_BRANCH}/guides/benchmark/$f"
+    curl -LJO "https://raw.githubusercontent.com/llm-d/llm-d/main/guides/benchmark/$f"
     break
   done
   ```
@@ -238,13 +237,13 @@ Several results files will be created (see [Benchmark doc](../benchmark/README.m
 Choose the `pd_vllm_bench_random_concurrent_template.yaml` template, then run:
 
   ```bash
-  export NAMESPACE=dpikus-pd     # replace with your namespace
+  export NAMESPACE=llm-d-pd     # replace with your namespace
   export BENCHMARK_PVC=workload-pvc   # replace with your PVC name
   export GATEWAY_SVC=infra-pd-inference-gateway-istio  # replace with your exact service name
   envsubst < pd_vllm_bench_random_concurrent_template.yaml > config.yaml
   ```
 
-After that, edit `config.yaml` if needed and run the command
+Edit `config.yaml` if further customization is needed, and then run the command
   ```bash
   ./run_only.sh -c config.yaml
   ```
