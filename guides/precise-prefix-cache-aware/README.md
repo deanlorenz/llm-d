@@ -173,39 +173,42 @@ For information on customizing a guide and tips to build your own, see [our docs
 
 To run benchmarks against the installed llm-d stack, you need [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh), a template file from [guides/benchmark](../benchmark/), and a Persistent Volume Claim (PVC) to store the results. Follow the instructions in the [benchmark doc](../benchmark/README.md). 
 
+
 ### Example
 
 This example uses [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh) with the template [precise_guidellm_template.yaml](../benchmark/precise_guidellm_template.yaml).
 
+The benchmark launches a pod (`llmdbench-harness-launcher`) that, in this case, uses `GuideLLM` with a random synthetic workload named `rate_comparison`. This workload runs several times with different rates. The results will be stored on the provided PVC, accessible through the `llmdbench-harness-launcher` pod. Each experiment is saved under the `requests` folder, e.g.,/`requests/guidellm_<experiment ID>_rate_comparison_<model name>` folder. 
+
+Several results files will be created (see [Benchmark doc](../benchmark/README.md)), including a yaml file in a "standard" benchmark report format (see [Benchmark Report](https://github.com/llm-d/llm-d-benchmark/blob/main/docs/benchmark_report.md)).
 
   ```bash
   curl -L -O https://raw.githubusercontent.com/llm-d/llm-d-benchmark/main/existing_stack/run_only.sh
   chmod u+x run_only.sh
-  LLMD_BRANCH=ec13ae7
   select f in $(
-      curl -s https://api.github.com/repos/llm-d/llm-d/contents/guides/benchmark?ref=${LLMD_BRANCH} | 
+      curl -s https://api.github.com/repos/llm-d/llm-d/contents/guides/benchmark?ref=main | 
       sed -n '/[[:space:]]*"name":[[:space:]][[:space:]]*"\(precise.*\_template\.yaml\)".*/ s//\1/p'
     ); do 
-    curl -LJO "https://raw.githubusercontent.com/llm-d/llm-d/${LLMD_BRANCH}/guides/benchmark/$f"
+    curl -LJO "https://raw.githubusercontent.com/llm-d/llm-d/main/guides/benchmark/$f"
     break
   done
   ```
-
-  Choose the `precise_guidellm_template.yaml` template, then run:
+  
+Choose the `precise_guidellm_template.yaml` template, then run:
 
   ```bash
-  export NAMESPACE=dpikus-precise     # replace with your namespace
+  export NAMESPACE=llm-d-pd     # replace with your namespace
   export BENCHMARK_PVC=workload-pvc   # replace with your PVC name
-  export GATEWAY_SVC=infra-kv-events-inference-gateway-istio  # replace with your exact service name
+  export GATEWAY_SVC=infra-pd-inference-gateway-istio  # replace with your exact service name
+  envsubst < precise_guidellm_template.yaml > config.yaml
   ```
 
-After that run the command
+Edit `config.yaml` if further customization is needed, and then run the command
   ```bash
-  envsubst < precise_guidellm_template.yaml > config.yaml
   ./run_only.sh -c config.yaml
   ```
 
-  The results from GuideLLM run are:
+The results from GuideLLM run are:
 
 ```  
 ℹ Run Summary Info
