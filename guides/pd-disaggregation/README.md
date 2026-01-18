@@ -209,17 +209,47 @@ For information on customizing a guide and tips to build your own, see [our docs
 
 ## Benchmarking
 
-To run benchmarks against the installed llm-d stack, follow the instructions in the [benchmark doc](../benchmark/README.md).
+To run benchmarks against the installed llm-d stack, you need [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh), a template file from [guides/benchmark](../benchmark/), and a Persistent Volume Claim (PVC) to store the results. Follow the instructions in the [benchmark doc](../benchmark/README.md). 
 
-### Example of Benchmark Results
 
-To reproduce this run, use the sample template [pd_vllm_bench_random_concurrent_template](../benchmark/pd_vllm_bench_random_concurrent_template.yaml). 
+### Example
+
+This example uses [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh) with the template [pd_vllm_bench_random_concurrent_template.yaml](../benchmark/pd_vllm_bench_random_concurrent_template.yaml).
+
 The benchmark launches a pod (`llmdbench-harness-launcher`) that, in this case, uses `vllm-bench` with a random synthetic workload named `random_concurrent`. 
-The results will be stored under on the provided PVC, accessible through the `llmdbench-harness-launcher` pod. Each experiment is saved under the `requests` folder, e.g.,/`requests/vllm-benchmark_1768132208_random_concurrent_Qwen2-0.5B` folder (with `1768132208` replaced by an experiment ID). 
+The results will be stored under on the provided PVC, accessible through the `llmdbench-harness-launcher` pod. Each experiment is saved under the `requests` folder, e.g.,/`requests/vllm-benchmark_<experiment ID>_random_concurrent_<model name>` folder. 
 
 Several results files will be created (see [Benchmark doc](../benchmark/README.md)), including a yaml file in a "standard" benchmark report format (see [Benchmark Report](https://github.com/llm-d/llm-d-benchmark/blob/main/docs/benchmark_report.md)).
 
-Here is an example of a benchmark_report for this run:
+
+  ```bash
+  curl -L -O https://raw.githubusercontent.com/llm-d/llm-d-benchmark/main/existing_stack/run_only.sh
+  chmod u+x run_only.sh
+  LLMD_BRANCH=847c8b1
+  select f in $(
+      curl -s https://api.github.com/repos/llm-d/llm-d/contents/guides/benchmark?ref=${LLMD_BRANCH} | 
+      sed -n '/[[:space:]]*"name":[[:space:]][[:space:]]*"\(pd.*\_template\.yaml\)".*/ s//\1/p'
+    ); do 
+    curl -LJO "https://raw.githubusercontent.com/llm-d/llm-d/${LLMD_BRANCH}/guides/benchmark/$f"
+    break
+  done
+  ```
+  
+Choose the `pd_vllm_bench_random_concurrent_template.yaml` template, then run:
+
+  ```bash
+  export NAMESPACE=dpikus-pd     # replace with your namespace
+  export BENCHMARK_PVC=workload-pvc   # replace with your PVC name
+  export GATEWAY_SVC=infra-pd-inference-gateway-istio  # replace with your exact service name
+  envsubst < pd_vllm_bench_random_concurrent_template.yaml > config.yaml
+  ```
+
+After that, edit `config.yaml` if needed and run the command
+  ```bash
+  ./run_only.sh -c config.yaml
+  ```
+
+Here is an example of a benchmark_report for this run (using a lighter llm-d stack, serving `Qwen2-0.5B-Instruct-FP8` with a single GPU per pod):
   ```yaml
   metrics:
     latency:
