@@ -32,14 +32,31 @@ workload:                         # yaml configuration for harness workload(s)
     load:
       type: poisson
       interval: 15
-      sweep:                        # Automatically determine saturation point of the target service and generate stages
-        type: linear                # Produce a linear distribution [1.0, saturation] of rates for num_stages or geometric distribution clustered around the saturation point
-        timeout: 60                 # Length of time to run load to determine saturation
-        num_stages: 7               # Number of stages to generate
-        stage_duration: 180         # Duration of each generated stage
-        saturation_percentile: 95
+      stages:
+      - rate: 1
+        duration: 180
+      - rate: 2
+        duration: 180
+      - rate: 4
+        duration: 180
+      - rate: 6
+        duration: 180
+      - rate: 8
+        duration: 180
+      - rate: 10
+        duration: 180
+      - rate: 12
+        duration: 180
+      - rate: 14
+        duration: 180
+      # sweep:                        # Automatically determine saturation point of the target service and generate stages
+      #   type: linear                # Produce a linear distribution [1.0, saturation] of rates for num_stages or geometric distribution clustered around the saturation point
+      #   timeout: 60                 # Length of time to run load to determine saturation
+      #   num_stages: 7               # Number of stages to generate
+      #   stage_duration: 60          # Duration of each generated stage
+      #   saturation_percentile: 95
     api:
-      type: chat
+      type: completion
       streaming: true
     server:
       type: vllm
@@ -73,14 +90,31 @@ workload:                         # yaml configuration for harness workload(s)
     load:
       type: poisson
       interval: 15
-      sweep:                        # Automatically determine saturation point of the target service and generate stages
-        type: linear                # Produce a linear distribution [1.0, saturation] of rates for num_stages or geometric distribution clustered around the saturation point
-        timeout: 60                 # Length of time to run load to determine saturation
-        num_stages: 7               # Number of stages to generate
-        stage_duration: 180         # Duration of each generated stage
-        saturation_percentile: 95
+      stages:
+      - rate: 1
+        duration: 180
+      - rate: 2
+        duration: 180
+      - rate: 4
+        duration: 180
+      - rate: 6
+        duration: 180
+      - rate: 8
+        duration: 180
+      - rate: 10
+        duration: 180
+      - rate: 12
+        duration: 180
+      - rate: 14
+        duration: 180
+      # sweep:                        # Automatically determine saturation point of the target service and generate stages
+      #   type: linear                # Produce a linear distribution [1.0, saturation] of rates for num_stages or geometric distribution clustered around the saturation point
+      #   timeout: 60                 # Length of time to run load to determine saturation
+      #   num_stages: 7               # Number of stages to generate
+      #   stage_duration: 60          # Duration of each generated stage
+      #   saturation_percentile: 95
     api:
-      type: chat
+      type: completion
       streaming: true
     server:
       type: vllm
@@ -114,14 +148,31 @@ workload:                         # yaml configuration for harness workload(s)
     load:
       type: poisson
       interval: 15
-      sweep:                        # Automatically determine saturation point of the target service and generate stages
-        type: linear                # Produce a linear distribution [1.0, saturation] of rates for num_stages or geometric distribution clustered around the saturation point
-        timeout: 60                 # Length of time to run load to determine saturation
-        num_stages: 7               # Number of stages to generate
-        stage_duration: 180         # Duration of each generated stage
-        saturation_percentile: 95
+      stages:
+      - rate: 1
+        duration: 180
+      - rate: 2
+        duration: 180
+      - rate: 4
+        duration: 180
+      - rate: 6
+        duration: 180
+      - rate: 8
+        duration: 180
+      - rate: 10
+        duration: 180
+      - rate: 12
+        duration: 180
+      - rate: 14
+        duration: 180
+      # sweep:                        # Automatically determine saturation point of the target service and generate stages
+      #   type: linear                # Produce a linear distribution [1.0, saturation] of rates for num_stages or geometric distribution clustered around the saturation point
+      #   timeout: 60                 # Length of time to run load to determine saturation
+      #   num_stages: 7               # Number of stages to generate
+      #   stage_duration: 60          # Duration of each generated stage
+      #   saturation_percentile: 95
     api:
-      type: chat
+      type: completion
       streaming: true
     server:
       type: vllm
@@ -155,14 +206,31 @@ workload:                         # yaml configuration for harness workload(s)
     load:
       type: poisson
       interval: 15
-      sweep:                        # Automatically determine saturation point of the target service and generate stages
-        type: linear                # Produce a linear distribution [1.0, saturation] of rates for num_stages or geometric distribution clustered around the saturation point
-        timeout: 60                 # Length of time to run load to determine saturation
-        num_stages: 7               # Number of stages to generate
-        stage_duration: 180         # Duration of each generated stage
-        saturation_percentile: 95
+      stages:
+      - rate: 1
+        duration: 180
+      - rate: 2
+        duration: 180
+      - rate: 4
+        duration: 180
+      - rate: 6
+        duration: 180
+      - rate: 8
+        duration: 180
+      - rate: 10
+        duration: 180
+      - rate: 12
+        duration: 180
+      - rate: 14
+        duration: 180
+      # sweep:                        # Automatically determine saturation point of the target service and generate stages
+      #   type: linear                # Produce a linear distribution [1.0, saturation] of rates for num_stages or geometric distribution clustered around the saturation point
+      #   timeout: 60                 # Length of time to run load to determine saturation
+      #   num_stages: 7               # Number of stages to generate
+      #   stage_duration: 60          # Duration of each generated stage
+      #   saturation_percentile: 95
     api:
-      type: chat
+      type: completion
       streaming: true
     server:
       type: vllm
