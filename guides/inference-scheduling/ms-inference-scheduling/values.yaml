@@ -7,42 +7,34 @@ modelArtifacts:
   authSecretName: "llm-d-hf-token"
 
 routing:
-  servicePort: 8000
   proxy:
-    image: ghcr.io/llm-d/llm-d-routing-sidecar:v0.4.0-rc.1
-    connector: nixlv2
-    secure: false
+    enabled: false # removes sidecar from deployment - no PD in inference scheduling
+    targetPort: 8000 # controls vLLM port to matchup with sidecar if deployed
 
-accelerator:
-  # Type of accelerator to use
+accelerator:   # Type of accelerator to use
   type: nvidia
 
 decode:
+  create: true
   parallelism:
     tensor: 2
     data: 1
-  create: true
   replicas: 8
   monitoring:
     podmonitor:
       enabled: true
-      portName: "metrics"  # decode vLLM service port (from routing.proxy.targetPort)
+      portName: "vllm"  # decode vLLM service port (from routing.proxy.targetPort)
       path: "/metrics"
-      interval: "30s"
+      interval: "10s"   # @TODO change to 30 
   containers:
   - name: "vllm"
     image: ghcr.io/llm-d/llm-d-cuda:v0.4.0
     modelCommand: vllmServe
     args:
-      - "--block-size" 
-      - "64"      
-#      - "--tensor-parallel-size" # added automatically
-#      - "2"
-#      - "--max-model-len"
-#      - "-1"
-      - "--kv-transfer-config"
-      - '{"kv_connector":"NixlConnector", "kv_role":"kv_both"}'
+      - "--block-size=64" 
       - "--disable-uvicorn-access-log"
+#      - "--tensor-parallel-size=2" # added automatically from 'parallelism'
+#      - "--max-model-len=-1"
     env:
       - name: PYTHONHASHSEED
         value: '42'
@@ -57,10 +49,8 @@ decode:
       - name: VLLM_LOGGING_LEVEL
         value: INFO
     ports:
-      - containerPort: 5557
-        protocol: TCP
-      - containerPort: 8200
-        name: metrics
+      - containerPort: 8000
+        name: vllm
         protocol: TCP
     resources:
       limits:
@@ -82,7 +72,7 @@ decode:
     startupProbe:
       httpGet:
         path: /v1/models
-        port: 8200
+        port: vllm
       initialDelaySeconds: 15
       periodSeconds: 30
       timeoutSeconds: 5
@@ -90,14 +80,14 @@ decode:
     livenessProbe:
       httpGet:
         path: /health
-        port: 8200
+        port: vllm
       periodSeconds: 10
       timeoutSeconds: 5
       failureThreshold: 3
     readinessProbe:
       httpGet:
         path: /v1/models
-        port: 8200
+        port: vllm
       periodSeconds: 5
       timeoutSeconds: 2
       failureThreshold: 3
