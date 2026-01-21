@@ -1,9 +1,9 @@
 multinode: false
 
 modelArtifacts:
-  uri: "hf://Qwen/Qwen3-32B"
-  name: "Qwen/Qwen3-32B"
-  size: 100Gi
+  uri: "hf://Qwen/Qwen3-0.6B"
+  name: "Qwen/Qwen3-0.6B"
+  size: 20Gi
   authSecretName: "llm-d-hf-token"
 
 routing:
@@ -13,16 +13,9 @@ routing:
     connector: nixlv2
     secure: false
 
-accelerator:
-  # Type of accelerator to use
-  type: nvidia
-
 decode:
-  parallelism:
-    tensor: 2
-    data: 1
   create: true
-  replicas: 8
+  replicas: 2
   monitoring:
     podmonitor:
       enabled: true
@@ -31,21 +24,15 @@ decode:
       interval: "30s"
   containers:
   - name: "vllm"
-    image: ghcr.io/llm-d/llm-d-cuda:v0.4.0
+    image: ghcr.io/llm-d/llm-d-cuda:v0.3.1
     modelCommand: vllmServe
     args:
-      - "--block-size" 
-      - "64"      
-#      - "--tensor-parallel-size" # added automatically
-#      - "2"
-#      - "--max-model-len"
-#      - "-1"
       - "--kv-transfer-config"
       - '{"kv_connector":"NixlConnector", "kv_role":"kv_both"}'
       - "--disable-uvicorn-access-log"
     env:
-      - name: PYTHONHASHSEED
-        value: '42'
+      - name: CUDA_VISIBLE_DEVICES
+        value: "0"
       - name: UCX_TLS
         value: "cuda_ipc,cuda_copy,tcp"
       - name: VLLM_NIXL_SIDE_CHANNEL_HOST
@@ -64,19 +51,13 @@ decode:
         protocol: TCP
     resources:
       limits:
-#        nvidia.com/gpu: '2' # added automatically from 'parallelism'
-        cpu: '32'
-        memory: 100Gi
+        nvidia.com/gpu: "1"
       requests:
-#        nvidia.com/gpu: '2' # added automatically from 'parallelism'
-        cpu: '32'
-        memory: 100Gi
+        nvidia.com/gpu: "1"
     mountModelVolume: true
     volumeMounts:
     - name: metrics-volume
       mountPath: /.config
-    - name: shm
-      mountPath: /dev/shm
     - name: torch-compile-cache
       mountPath: /.cache
     startupProbe:
@@ -106,11 +87,7 @@ decode:
     emptyDir: {}
   - name: torch-compile-cache
     emptyDir: {}
-  - name: shm
-    emptyDir:
-      medium: Memory
-      sizeLimit: 20Gi
-        
+
 # PD disabled in this example
 prefill:
   create: false
