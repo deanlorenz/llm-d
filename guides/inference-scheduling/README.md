@@ -8,7 +8,7 @@ This profile defaults to the approximate prefix cache aware scorer, which only o
 
 ## Hardware Requirements
 
-This example out of the box uses 16 GPUs (8 replicas x 2 GPUs each) of any supported kind, though fewer can be used so long as `values.yaml` is also updated accordingly:
+This example out of the box uses 20 GPUs (10 replicas x 2 GPUs each) of any supported kind, though fewer can be used so long as `values.yaml` is also updated accordingly:
 
 - **NVIDIA GPUs**: Any NVIDIA GPU (support determined by the inferencing image used)
 - **Intel XPU/GPUs**: Intel Data Center GPU Max 1550 or compatible Intel XPU device
@@ -154,10 +154,10 @@ kubectl apply -f httproute.yaml -n ${NAMESPACE}
 
 ```bash
 helm list -n ${NAMESPACE}
-NAME                        NAMESPACE                 REVISION  UPDATED                               STATUS    CHART                       APP VERSION
-gaie-inference-scheduling   llm-d-inference-scheduler 1         2025-08-24 11:24:53.231918 -0700 PDT  deployed  inferencepool-v1.2.0        v1.2.0
-infra-inference-scheduling  llm-d-inference-scheduler 1         2025-08-24 11:24:49.551591 -0700 PDT  deployed  llm-d-infra-v1.3.6          v0.3.0
-ms-inference-scheduling     llm-d-inference-scheduler 1         2025-08-24 11:24:58.360173 -0700 PDT  deployed  llm-d-modelservice-v0.3.17  v0.3.0
+NAME                        NAMESPACE                   REVISION  UPDATED                                 STATUS      CHART                       APP VERSION
+gaie-inference-scheduling   llm-d-inference-scheduler   2         2026-01-19 17:13:31.307765 +0200 IST    deployed    inferencepool-v1.2.1        v1.2.1
+infra-inference-scheduling  llm-d-inference-scheduler   1         2026-01-06 13:00:15.325899 +0200 IST    deployed    llm-d-infra-v1.3.5          v0.3.0
+ms-inference-scheduling     llm-d-inference-scheduler   11        2026-01-21 13:47:06.721462 +0200 IST    deployed    llm-d-modelservice-v0.3.8   v0.3.0
 ```
 
 - Out of the box with this example you should have the following resources:
@@ -165,25 +165,44 @@ ms-inference-scheduling     llm-d-inference-scheduler 1         2025-08-24 11:24
 ```bash
 kubectl get all -n ${NAMESPACE}
 NAME                                                                  READY   STATUS    RESTARTS   AGE
-pod/gaie-inference-scheduling-epp-f8fbd9897-cxfvn                     1/1     Running   0          3m59s
-pod/infra-inference-scheduling-inference-gateway-istio-6787675b9swc   1/1     Running   0          4m3s
-pod/ms-inference-scheduling-llm-d-modelservice-decode-8ff7fd5b58lw9   1/1     Running   0          3m55s
-pod/ms-inference-scheduling-llm-d-modelservice-decode-8ff7fd5bt5f9s   1/1     Running   0          3m55s
+pod/gaie-inference-scheduling-epp-7bd49dbd9-srw28                     1/1     Running   0          2d14h
+pod/infra-inference-scheduling-inference-gateway-istio-7dbdd599hw9r   1/1     Running   0          19d
+pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcf4pw79   1/1     Running   0          3d19h
+pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcf7tpq4   1/1     Running   0          4d1h
+pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcf959w7   1/1     Running   0          4d1h
+pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcfcsxvl   1/1     Running   0          4d1h
+pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcffvps2   1/1     Running   0          4d1h
+pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcfk7q6l   1/1     Running   0          4d1h
+pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcfqj4g8   1/1     Running   0          4d1h
+pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcfr2pr6   1/1     Running   0          4d1h
+pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcft5s2f   1/1     Running   0          4d1h
+pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcfv48dd   1/1     Running   0          4d1h
 
 NAME                                                         TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)                        AGE
 service/gaie-inference-scheduling-epp                        ClusterIP      10.16.3.151   <none>        9002/TCP,9090/TCP              3m59s
 service/gaie-inference-scheduling-ip-18c12339                ClusterIP      None          <none>        54321/TCP                      3m59s
-service/infra-inference-scheduling-inference-gateway-istio   ClusterIP      10.16.1.195   10.16.4.2     15021:30274/TCP,80:32814/TCP   4m3s
+service/infra-inference-scheduling-inference-gateway-istio   LoadBalancer   10.16.1.195   10.16.4.2     15021:30274/TCP,80:32814/TCP   4m3s
 
 NAME                                                                 READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/gaie-inference-scheduling-epp                        1/1     1            1           4m
-deployment.apps/infra-inference-scheduling-inference-gateway-istio   1/1     1            1           4m4s
-deployment.apps/ms-inference-scheduling-llm-d-modelservice-decode    2/2     2            2           3m56s
+deployment.apps/gaie-inference-scheduling-epp                        1/1     1            1           19d
+deployment.apps/infra-inference-scheduling-inference-gateway-istio   1/1     1            1           19d
+deployment.apps/ms-inference-scheduling-llm-d-modelservice-decode    10/10   10           10          19d
 
 NAME                                                                           DESIRED   CURRENT   READY   AGE
-replicaset.apps/gaie-inference-scheduling-epp-f8fbd9897                        1         1         1       4m
-replicaset.apps/infra-inference-scheduling-inference-gateway-istio-678767549   1         1         1       4m4s
-replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-8ff7fd5b8    2         2         2       3m56s
+replicaset.apps/gaie-inference-scheduling-epp-59c5f64d7b                       0         0         0       19d
+replicaset.apps/gaie-inference-scheduling-epp-7bd49dbd9                        1         1         1       2d14h
+replicaset.apps/infra-inference-scheduling-inference-gateway-istio-7dbdd5978   1         1         1       19d
+replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-5967d6f986   0         0         0       4d1h
+replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-5b5f7b59b7   0         0         0       5d21h
+replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-654cb9f9f9   0         0         0       5d21h
+replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-6ff9d94465   0         0         0       5d21h
+replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-77f5d7b87f   0         0         0       19d
+replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-786b6cbbc    0         0         0       5d20h
+replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcfc8   10        10        10      4d1h
+replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-7c948c979d   0         0         0       5d21h
+replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-7cc884d85d   0         0         0       5d21h
+replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-dfccb6cc7    0         0         0       5d21h
+replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-f9bd7566f    0         0         0       5d20h
 ```
 
 <!-- TAB: Standalone Option -->
@@ -227,48 +246,6 @@ replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-8ff7fd5b8    2
 ## Using the stack
 
 For instructions on getting started making inference requests see [our docs](../../docs/getting-started-inferencing.md)
-
-## Cleanup
-
-To remove the deployment:
-
-```bash
-# From examples/inference-scheduling
-helmfile destroy -n ${NAMESPACE}
-
-# Or uninstall manually
-helm uninstall infra-inference-scheduling -n ${NAMESPACE} --ignore-not-found
-helm uninstall gaie-inference-scheduling -n ${NAMESPACE}
-helm uninstall ms-inference-scheduling -n ${NAMESPACE}
-```
-
-**_NOTE:_** If you set the `$RELEASE_NAME_POSTFIX` environment variable, your release names will be different from the command above: `infra-$RELEASE_NAME_POSTFIX`, `gaie-$RELEASE_NAME_POSTFIX` and `ms-$RELEASE_NAME_POSTFIX`.
-
-### Cleanup HTTPRoute when using Gateway option
-
-Follow provider specific instructions for deleting HTTPRoute.
-
-#### Cleanup for "kgateway" or "istio"
-
-```bash
-kubectl delete -f httproute.yaml -n ${NAMESPACE}
-```
-
-#### Cleanup for "gke"
-
-```bash
-kubectl delete -f httproute.gke.yaml -n ${NAMESPACE}
-```
-
-#### Cleanup for "digitalocean"
-
-```bash
-kubectl delete -f httproute.yaml -n ${NAMESPACE}
-```
-
-## Customization
-
-For information on customizing a guide and tips to build your own, see [our docs](../../docs/customizing-a-guide.md)
 
 ## Benchmarking
 
@@ -557,3 +534,46 @@ Edit `config.yaml` if further customization is needed, and then run the command
       name: unknown
   version: '0.1'
   ```
+
+## Cleanup
+
+To remove the deployment:
+
+```bash
+# From examples/inference-scheduling
+helmfile destroy -n ${NAMESPACE}
+
+# Or uninstall manually
+helm uninstall infra-inference-scheduling -n ${NAMESPACE} --ignore-not-found
+helm uninstall gaie-inference-scheduling -n ${NAMESPACE}
+helm uninstall ms-inference-scheduling -n ${NAMESPACE}
+```
+
+**_NOTE:_** If you set the `$RELEASE_NAME_POSTFIX` environment variable, your release names will be different from the command above: `infra-$RELEASE_NAME_POSTFIX`, `gaie-$RELEASE_NAME_POSTFIX` and `ms-$RELEASE_NAME_POSTFIX`.
+
+### Cleanup HTTPRoute when using Gateway option
+
+Follow provider specific instructions for deleting HTTPRoute.
+
+#### Cleanup for "kgateway" or "istio"
+
+```bash
+kubectl delete -f httproute.yaml -n ${NAMESPACE}
+```
+
+#### Cleanup for "gke"
+
+```bash
+kubectl delete -f httproute.gke.yaml -n ${NAMESPACE}
+```
+
+#### Cleanup for "digitalocean"
+
+```bash
+kubectl delete -f httproute.yaml -n ${NAMESPACE}
+```
+
+## Customization
+
+For information on customizing a guide and tips to build your own, see [our docs](../../docs/customizing-a-guide.md)
+
