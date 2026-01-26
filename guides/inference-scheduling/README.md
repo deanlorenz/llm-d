@@ -155,9 +155,9 @@ kubectl apply -f httproute.yaml -n ${NAMESPACE}
 ```bash
 helm list -n ${NAMESPACE}
 NAME                        NAMESPACE                   REVISION  UPDATED                                 STATUS      CHART                       APP VERSION
-gaie-inference-scheduling   llm-d-inference-scheduler   2         2026-01-19 17:13:31.307765 +0200 IST    deployed    inferencepool-v1.2.1        v1.2.1
-infra-inference-scheduling  llm-d-inference-scheduler   1         2026-01-06 13:00:15.325899 +0200 IST    deployed    llm-d-infra-v1.3.5          v0.3.0
-ms-inference-scheduling     llm-d-inference-scheduler   11        2026-01-21 13:47:06.721462 +0200 IST    deployed    llm-d-modelservice-v0.3.8   v0.3.0
+gaie-inference-scheduling   llm-d-inference-scheduler   1         2026-01-26 15:11:26.506854 +0200 IST    deployed    inferencepool-v1.3.0        v1.3.0
+infra-inference-scheduling  llm-d-inference-scheduler   1         2026-01-26 15:11:21.008163 +0200 IST    deployed    llm-d-infra-v1.3.6          v0.3.0
+ms-inference-scheduling     llm-d-inference-scheduler   1         2026-01-26 15:11:39.385111 +0200 IST    deployed    llm-d-modelservice-v0.3.17  v0.3.0
 ```
 
 - Out of the box with this example you should have the following resources:
@@ -165,44 +165,32 @@ ms-inference-scheduling     llm-d-inference-scheduler   11        2026-01-21 13:
 ```bash
 kubectl get all -n ${NAMESPACE}
 NAME                                                                  READY   STATUS    RESTARTS   AGE
-pod/gaie-inference-scheduling-epp-7bd49dbd9-srw28                     1/1     Running   0          2d14h
-pod/infra-inference-scheduling-inference-gateway-istio-7dbdd599hw9r   1/1     Running   0          19d
-pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcf4pw79   1/1     Running   0          3d19h
-pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcf7tpq4   1/1     Running   0          4d1h
-pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcf959w7   1/1     Running   0          4d1h
-pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcfcsxvl   1/1     Running   0          4d1h
-pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcffvps2   1/1     Running   0          4d1h
-pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcfk7q6l   1/1     Running   0          4d1h
-pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcfqj4g8   1/1     Running   0          4d1h
-pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcfr2pr6   1/1     Running   0          4d1h
-pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcft5s2f   1/1     Running   0          4d1h
-pod/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcfv48dd   1/1     Running   0          4d1h
+pod/gaie-inference-scheduling-epp-59c5f64d7b-b5j2d                    1/1     Running   0          36m
+pod/infra-inference-scheduling-inference-gateway-istio-55fd84cnjzfv   1/1     Running   0          36m
+pod/llmdbench-harness-launcher                                        1/1     Running   0          2m43s
+pod/ms-inference-scheduling-llm-d-modelservice-decode-866b7c8795szd   1/1     Running   0          35m
+pod/ms-inference-scheduling-llm-d-modelservice-decode-866b7c87cdntk   1/1     Running   0          35m
+pod/ms-inference-scheduling-llm-d-modelservice-decode-866b7c87cnxxq   1/1     Running   0          35m
+pod/ms-inference-scheduling-llm-d-modelservice-decode-866b7c87fvtjf   1/1     Running   0          35m
+pod/ms-inference-scheduling-llm-d-modelservice-decode-866b7c87jqt27   1/1     Running   0          35m
+pod/ms-inference-scheduling-llm-d-modelservice-decode-866b7c87kwxc6   1/1     Running   0          35m
+pod/ms-inference-scheduling-llm-d-modelservice-decode-866b7c87rld4t   1/1     Running   0          35m
+pod/ms-inference-scheduling-llm-d-modelservice-decode-866b7c87xvbmp   1/1     Running   0          35m
 
-NAME                                                         TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)                        AGE
-service/gaie-inference-scheduling-epp                        ClusterIP      10.16.3.151   <none>        9002/TCP,9090/TCP              3m59s
-service/gaie-inference-scheduling-ip-18c12339                ClusterIP      None          <none>        54321/TCP                      3m59s
-service/infra-inference-scheduling-inference-gateway-istio   LoadBalancer   10.16.1.195   10.16.4.2     15021:30274/TCP,80:32814/TCP   4m3s
+NAME                                                         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+service/gaie-inference-scheduling-epp                        ClusterIP   172.30.240.45    <none>        9002/TCP,9090/TCP   36m
+service/gaie-inference-scheduling-ip-18c12339                ClusterIP   None             <none>        54321/TCP           36m
+service/infra-inference-scheduling-inference-gateway-istio   ClusterIP   172.30.28.163    <none>        15021/TCP,80/TCP    36m
 
 NAME                                                                 READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/gaie-inference-scheduling-epp                        1/1     1            1           19d
-deployment.apps/infra-inference-scheduling-inference-gateway-istio   1/1     1            1           19d
-deployment.apps/ms-inference-scheduling-llm-d-modelservice-decode    10/10   10           10          19d
+deployment.apps/gaie-inference-scheduling-epp                        1/1     1            1           36m
+deployment.apps/infra-inference-scheduling-inference-gateway-istio   1/1     1            1           36m
+deployment.apps/ms-inference-scheduling-llm-d-modelservice-decode    8/8     8            8           35m
 
-NAME                                                                           DESIRED   CURRENT   READY   AGE
-replicaset.apps/gaie-inference-scheduling-epp-59c5f64d7b                       0         0         0       19d
-replicaset.apps/gaie-inference-scheduling-epp-7bd49dbd9                        1         1         1       2d14h
-replicaset.apps/infra-inference-scheduling-inference-gateway-istio-7dbdd5978   1         1         1       19d
-replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-5967d6f986   0         0         0       4d1h
-replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-5b5f7b59b7   0         0         0       5d21h
-replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-654cb9f9f9   0         0         0       5d21h
-replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-6ff9d94465   0         0         0       5d21h
-replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-77f5d7b87f   0         0         0       19d
-replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-786b6cbbc    0         0         0       5d20h
-replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-7bf54bcfc8   10        10        10      4d1h
-replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-7c948c979d   0         0         0       5d21h
-replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-7cc884d85d   0         0         0       5d21h
-replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-dfccb6cc7    0         0         0       5d21h
-replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-f9bd7566f    0         0         0       5d20h
+NAME                                                                            DESIRED   CURRENT   READY   AGE
+replicaset.apps/gaie-inference-scheduling-epp-59c5f64d7b                        1         1         1       36m
+replicaset.apps/infra-inference-scheduling-inference-gateway-istio-55fd84c7fd   1         1         1       36m
+replicaset.apps/ms-inference-scheduling-llm-d-modelservice-decode-866b7c8768    8         8         8       35m
 ```
 
 <!-- TAB: Standalone Option -->
