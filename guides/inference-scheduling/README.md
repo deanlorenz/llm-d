@@ -8,7 +8,7 @@ This profile defaults to the approximate prefix cache aware scorer, which only o
 
 ## Hardware Requirements
 
-This example out of the box uses 20 GPUs (10 replicas x 2 GPUs each) of any supported kind, though fewer can be used so long as `values.yaml` is also updated accordingly:
+This example out of the box uses 16 GPUs (8 replicas x 2 GPUs each) of any supported kind, though fewer can be used so long as `values.yaml` is also updated accordingly:
 
 - **NVIDIA GPUs**: Any NVIDIA GPU (support determined by the inferencing image used)
 - **Intel XPU/GPUs**: Intel Data Center GPU Max 1550 or compatible Intel XPU device
@@ -272,13 +272,13 @@ Several results files will be created (see [Benchmark doc](../benchmark/README.m
   done
   ```
   
-Choose the `inference_scheduling_shared_prefix_template.yaml` template, then run:
+Choose the `inference_scheduling_guide_template.yaml` template, then run:
 
   ```bash
   export NAMESPACE=llm-d-inference-scheduler     # replace with your namespace
   export BENCHMARK_PVC=workload-pvc   # replace with your PVC name
   export GATEWAY_SVC=infra-inference-scheduling-inference-gateway-istio  # replace with your exact service name
-  envsubst < inference_scheduling_shared_prefix_template.yaml > config.yaml
+  envsubst < inference_scheduling_guide_template.yaml > config.yaml
   ```
 
 Edit `config.yaml` if further customization is needed, and then run the command
