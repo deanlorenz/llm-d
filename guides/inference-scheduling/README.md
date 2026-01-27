@@ -584,8 +584,6 @@ For comparison, we ran the same workload on a k8s service endpoint that directly
 - **Latency**: TTFT (mean) -97.1% ; E2E request latency (mean) -31.2%
 - **Per-token speed**: Time per output token (mean) 63.8% (slower)
 
-#### Overall 
-
 | Metric                                                           | k8s       | llmd      | Δ (llmd - k8s)   | Δ% vs k8s  |
 |:-----------------------------------------------------------------|:----------|:----------|:-----------------|:-----------|
 | Requests/sec                                                     | 5.1038    | 7.0906    | 1.9868           | 38.9%      |
