@@ -241,7 +241,7 @@ To run benchmarks against the installed llm-d stack, you need [run_only.sh](http
 
 ### Example
 
-This example uses [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh) with the template [precise_guidellm_template.yaml](../benchmark/inference_scheduling_shared_prefix_template.yaml).
+This example uses [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh) with the template [inference_scheduling_guide_template.yaml](../benchmark/inference_scheduling_guide_template.yaml).
 
 The benchmark launches a pod (`llmdbench-harness-launcher`) that, in this case, uses `inference-perf` with a shared prefix synthetic workload named `shared_prefix_synthetic`. This workload runs several stages with different rates. The results will be stored on the provided PVC, accessible through the `llmdbench-harness-launcher` pod. Each experiment is saved under the `requests` folder, e.g.,/`requests/inference-perf_<experiment ID>_shared_prefix_synthetic_inference-scheduling_<model name>` folder. 
 
@@ -274,7 +274,9 @@ Edit `config.yaml` if further customization is needed, and then run the command
   ./run_only.sh -c config.yaml
   ```
 
-  The results from inference-perf run are:
+The output will show the progress of the `inference-perf` benchmark as it runs 
+<details>
+<summary><b><i>Click</i></b> here to view the expected output</summary>
 
   ```
   ...
@@ -304,132 +306,139 @@ Edit `config.yaml` if further customization is needed, and then run the command
   ...
   ```
 
-  Benchmarking Report (for rate=10):
+</details>
 
+
+### Benchmarking Report
+  
+There is a report for each stage. 
+<details>
+<summary><b><i>Click</i></b> here to view the report for `rate=10` from the above example</summary>
+  
   ```yaml
   metrics:
     latency:
       inter_token_latency:
-        max: 0.05777170229703188
-        mean: 0.0028540196591486065
-        min: 4.38326969742775e-06
-        p0p1: 4.994813352823258e-06
-        p1: 0.0002613391727209091
-        p10: 0.0023753787390887737
-        p25: 0.0025633699260652065
-        p5: 0.0020118332467973232
-        p50: 0.0027567152865231037
-        p75: 0.0030960491858422756
-        p90: 0.0035414122976362705
-        p95: 0.003907579928636551
-        p99: 0.005562575720250604
-        p99p9: 0.007995677366852985
+        max: 0.5279842139862012
+        mean: 0.023472589247039724
+        min: 5.54401776753366e-06
+        p0p1: 2.969687865697779e-05
+        p1: 0.01570920992817264
+        p10: 0.017796951622585766
+        p25: 0.019922889761801343
+        p5: 0.01697171464911662
+        p50: 0.02313095549470745
+        p75: 0.024240262260718737
+        p90: 0.025133388102403842
+        p95: 0.02772743094828911
+        p99: 0.055353467414679496
+        p99p9: 0.18073146573209703
         units: s/token
       normalized_time_per_output_token:
-        max: 0.7239119322039187
-        mean: 0.013230468383828011
-        min: 0.0012901967719534603
-        p0p1: 0.0013735272390653008
-        p1: 0.002475093616671815
-        p10: 0.002669081147359975
-        p25: 0.002781771464626337
-        p5: 0.0025888777642649073
-        p50: 0.0030131658049867838
-        p75: 0.003294003644896293
-        p90: 0.05602821090935993
-        p95: 0.08938193067442622
-        p99: 0.09968416544550564
-        p99p9: 0.4370293470854131
+        max: 0.7521504626874957
+        mean: 0.05686474655003883
+        min: 0.01698542306901072
+        p0p1: 0.01705017091645236
+        p1: 0.017788033250498277
+        p10: 0.020831146772993095
+        p25: 0.02294853476344245
+        p5: 0.019549211757198662
+        p50: 0.024393047083762623
+        p75: 0.02581844833641027
+        p90: 0.03438874353119622
+        p95: 0.17620685523326504
+        p99: 0.7340219901647014
+        p99p9: 0.7513766314058212
         units: s/token
       request_latency:
-        max: 0.9693497093394399
-        mean: 0.7592659112159162
-        min: 0.6293312991037965
-        p0p1: 0.6321117059849203
-        p1: 0.6379123754054308
-        p10: 0.6786826994735747
-        p25: 0.7066267926711589
-        p5: 0.6639299782225863
-        p50: 0.7455745704937726
-        p75: 0.8018235113704577
-        p90: 0.8615147506818176
-        p95: 0.8907231074757874
-        p99: 0.9520903471671045
-        p99p9: 0.9693295779344626
+        max: 28.373117309005465
+        mean: 23.649843642341583
+        min: 16.98542306901072
+        p0p1: 17.03639152829966
+        p1: 17.367577876535652
+        p10: 20.45322390751098
+        p25: 22.20301700950222
+        p5: 18.32161474993918
+        p50: 23.907766903503216
+        p75: 25.211236919509247
+        p90: 26.957327539619293
+        p95: 27.74618222430872
+        p99: 28.286736061605623
+        p99p9: 28.360666843361745
         units: s
       time_per_output_token:
-        max: 0.0036182620824547485
-        mean: 0.0028531568113432273
-        min: 0.002386520749756268
-        p0p1: 0.0023887520123694445
-        p1: 0.002406616739970671
-        p10: 0.002551740905867373
-        p25: 0.002654319440489598
-        p5: 0.002492177187595631
-        p50: 0.002806923320160422
-        p75: 0.0030105473229014024
-        p90: 0.003242099913000215
-        p95: 0.0033541438971445257
-        p99: 0.0035732898914102407
-        p99p9: 0.0036182615814177553
+        max: 0.02817760463198647
+        mean: 0.02347258924703972
+        min: 0.016891268502979073
+        p0p1: 0.01694094809678159
+        p1: 0.017275552588361897
+        p10: 0.020236119398896697
+        p25: 0.021978421900232206
+        p5: 0.018211736758588812
+        p50: 0.02373887161251332
+        p75: 0.024932539490495398
+        p90: 0.026851010997311093
+        p95: 0.027605408759595593
+        p99: 0.028058832576685237
+        p99p9: 0.028157355884088523
         units: s/token
       time_to_first_token:
-        max: 0.04281094064936042
-        mean: 0.022396996933966875
-        min: 0.01594797894358635
-        p0p1: 0.01681194866169244
-        p1: 0.01792819821741432
-        p10: 0.01954832240007818
-        p25: 0.02079031872563064
-        p5: 0.019093053368851542
-        p50: 0.022028648993000388
-        p75: 0.023641378502361476
-        p90: 0.025527860410511496
-        p95: 0.026530779246240855
-        p99: 0.03026527327019721
-        p99p9: 0.03792530749272588
+        max: 0.5789424130052794
+        mean: 0.14620283814088908
+        min: 0.05166479598847218
+        p0p1: 0.05235437456815271
+        p1: 0.05636055824958021
+        p10: 0.062016059117740954
+        p25: 0.0753971867452492
+        p5: 0.05930683680344373
+        p50: 0.136047175998101
+        p75: 0.1975146289987606
+        p90: 0.22555761661496943
+        p95: 0.2796898997810785
+        p99: 0.39144611745723484
+        p99p9: 0.5504729018774547
         units: s
     requests:
       failures: 0
       input_length:
-        max: 2468.0
-        mean: 2430.7
-        min: 2391.0
-        p0p1: 2391.499
-        p1: 2394.0
-        p10: 2409.0
-        p25: 2418.0
-        p5: 2403.95
-        p50: 2429.0
-        p75: 2444.25
-        p90: 2454.0
-        p95: 2458.0
-        p99: 2462.0
-        p99p9: 2466.503
+        max: 7665.0
+        mean: 7577.135
+        min: 7503.0
+        p0p1: 7503.0
+        p1: 7508.94
+        p10: 7535.0
+        p25: 7552.0
+        p5: 7526.8
+        p50: 7576.5
+        p75: 7601.0
+        p90: 7617.0
+        p95: 7626.05
+        p99: 7650.01
+        p99p9: 7662.214
         units: count
       output_length:
-        max: 510.0
-        mean: 228.03
-        min: 1.0
-        p0p1: 2.996
-        p1: 8.0
-        p10: 13.0
-        p25: 255.0
-        p5: 8.0
-        p50: 256.0
-        p75: 256.0
-        p90: 256.0
-        p95: 257.0
-        p99: 268.50999999999954
-        p99p9: 509.00200000000007
+        max: 1002.0
+        mean: 911.31
+        min: 32.0
+        p0p1: 32.0
+        p1: 32.0
+        p10: 762.6000000000006
+        p25: 991.0
+        p5: 159.15
+        p50: 997.0
+        p75: 1000.0
+        p90: 1000.0
+        p95: 1000.0
+        p99: 1001.0
+        p99p9: 1001.801
         units: count
-      total: 500
+      total: 200
     throughput:
-      output_tokens_per_sec: 2254.4490015619667
-      requests_per_sec: 9.88663334456855
-      total_tokens_per_sec: 26285.888672204743
+      output_tokens_per_sec: 4023.797460896292
+      requests_per_sec: 4.415399217496013
+      total_tokens_per_sec: 37479.873410757944
     time:
-      duration: 49.86801022803411
+      duration: 20.956964999990305
   scenario:
     load:
       args:
@@ -444,11 +453,11 @@ Edit `config.yaml` if further customization is needed, and then run the command
           path: null
           shared_prefix:
             enable_multi_turn_chat: false
-            num_groups: 32
-            num_prompts_per_group: 32
-            output_len: 256
-            question_len: 256
-            system_prompt_len: 2048
+            num_groups: 150
+            num_prompts_per_group: 5
+            output_len: 1000
+            question_len: 1200
+            system_prompt_len: 6000
           trace: null
           type: shared_prefix
         load:
@@ -460,34 +469,74 @@ Edit `config.yaml` if further customization is needed, and then run the command
           - concurrency_level: null
             duration: 50
             num_requests: null
-            rate: 2.0
+            rate: 15.0
           - concurrency_level: null
-            duration: 50
+            duration: 20
             num_requests: null
-            rate: 5.0
+            rate: 3.0
           - concurrency_level: null
-            duration: 50
-            num_requests: null
-            rate: 8.0
-          - concurrency_level: null
-            duration: 50
+            duration: 20
             num_requests: null
             rate: 10.0
           - concurrency_level: null
-            duration: 50
-            num_requests: null
-            rate: 12.0
-          - concurrency_level: null
-            duration: 50
+            duration: 20
             num_requests: null
             rate: 15.0
           - concurrency_level: null
-            duration: 50
+            duration: 38
             num_requests: null
             rate: 20.0
+          - concurrency_level: null
+            duration: 34
+            num_requests: null
+            rate: 22.0
+          - concurrency_level: null
+            duration: 30
+            num_requests: null
+            rate: 25.0
+          - concurrency_level: null
+            duration: 25
+            num_requests: null
+            rate: 30.0
+          - concurrency_level: null
+            duration: 21
+            num_requests: null
+            rate: 35.0
+          - concurrency_level: null
+            duration: 38
+            num_requests: null
+            rate: 40.0
+          - concurrency_level: null
+            duration: 36
+            num_requests: null
+            rate: 43.0
+          - concurrency_level: null
+            duration: 33
+            num_requests: null
+            rate: 46.0
+          - concurrency_level: null
+            duration: 30
+            num_requests: null
+            rate: 49.0
+          - concurrency_level: null
+            duration: 29
+            num_requests: null
+            rate: 52.0
+          - concurrency_level: null
+            duration: 27
+            num_requests: null
+            rate: 55.0
+          - concurrency_level: null
+            duration: 26
+            num_requests: null
+            rate: 57.0
+          - concurrency_level: null
+            duration: 25
+            num_requests: null
+            rate: 60.0
           sweep: null
           trace: null
-          type: constant
+          type: poisson
           worker_max_concurrency: 100
           worker_max_tcp_connections: 2500
         metrics: null
@@ -503,25 +552,76 @@ Edit `config.yaml` if further customization is needed, and then run the command
           api_key: null
           base_url: http://infra-inference-scheduling-inference-gateway-istio.dpikus-intel-inf.svc.cluster.local:80
           ignore_eos: true
-          model_name: Qwen/Qwen3-0.6B
+          model_name: Qwen/Qwen3-32B
           type: vllm
         storage:
           google_cloud_storage: null
           local_storage:
-            path: /requests/inference-perf_1768395442_shared_prefix_synthetic_inference-scheduling-Qwen3-0.6B
+            path: /requests/inference-perf_1769435052_Shared_prefix_inf-scheduling-guide-Qwen3-32B
             report_file_prefix: null
           simple_storage_service: null
         tokenizer:
-          pretrained_model_name_or_path: Qwen/Qwen3-0.6B
+          pretrained_model_name_or_path: Qwen/Qwen3-32B
           token: null
           trust_remote_code: null
       metadata:
-        stage: 3
+        stage: 2
       name: inference-perf
     model:
       name: unknown
   version: '0.1'
   ```
+
+</details>
+
+### Comparing LLM-d scheduling to a simple kubernetes service
+
+We examine the overall behavior of the entire workload of the example above, using the `summary_lifecycle_metrics.json` produced by 
+`inference-perf`.   
+For comparison, we ran the same workload on a k8s service endpoint that directly uses the vLLM pods as backends.
+
+- **Throughput**: Requests/sec 38.9% ; Output tokens/sec 38.8%
+- **Latency**: TTFT (mean) -97.1% ; E2E request latency (mean) -31.2%
+- **Per-token speed**: Time per output token (mean) 63.8% (slower)
+
+#### Overall 
+
+| Metric                                                           | k8s       | llmd      | Δ (llmd - k8s)   | Δ% vs k8s  |
+|:-----------------------------------------------------------------|:----------|:----------|:-----------------|:-----------|
+| Requests/sec                                                     | 5.1038    | 7.0906    | 1.9868           | 38.9%      |
+| Input tokens/sec                                                 | 38,688.28 | 53,751.21 | 15,062.92        | 38.9%      |
+| Output tokens/sec                                                | 4,787.09  | 6,644.34  | 1,857.25         | 38.8%      |
+| Total tokens/sec                                                 | 43,475.37 | 60,395.55 | 16,920.17        | 38.9%      |
+| Approx. gen speed (1/mean time_per_output_token) [tok/s/request] | 19.778    | 12.072    | -7.7064          | -39.0%     |
+| Request latency (s)                                              | 107.87    | 81.811    | -26.06           | -24.2%     |
+| TTFT (s)                                                         | 55.968    | 0.357     | -55.61           | -99.4%     |
+| Time/output token (ms)                                           | 52.91     | 79.24     | +0.02633         | +49.8%     |
+| Inter-token latency (ms)                                         | 32.01     | 51.32     | +0.01930         | +60.3%     |
+
+
+<!-- 
+#### More 
+
+| Metric                                                           | k8s       | llmd      | Δ (llmd - k8s)   | Δ% vs k8s   |
+|:-----------------------------------------------------------------|:----------|:----------|:-----------------|:------------|
+| Request latency median (s)                                       | 107.87    | 81.811    | -26.060          | -24.2%      |
+| Request latency mean (s)                                         | 123.49    | 84.998    | -38.491          | -31.2%      |
+| Request latency min (s)                                          | 16.960    | 15.934    | -1.0258          | -6.0%       |
+| Request latency max (s)                                          | 270.43    | 172.03    | -98.406          | -36.4%      |
+| TTFT median (s)                                                  | 55.968    | 0.357006  | -55.611          | -99.4%      |
+| TTFT mean (s)                                                    | 72.899    | 2.1319    | -70.767          | -97.1%      |
+| TTFT min (s)                                                     | 0.059361  | 0.046948  | -0.012413        | -20.9%      |
+| TTFT max (s)                                                     | 252.83    | 85.883    | -166.94          | -66.0%      |
+| Inter-token latency median (s/token)                             | 0.032011  | 0.051315  | 0.019305         | 60.3%       |
+| Inter-token latency mean (s/token)                               | 0.050560  | 0.082836  | 0.032276         | 63.8%       |
+| Inter-token latency min (s/token)                                | 0.000006  | 0.000004  | -0.000001        | -22.0%      |
+| Inter-token latency max (s/token)                                | 36.771    | 133.14    | 96.373           | 262.1%      |
+| Time per output token median (s/token)                           | 0.052911  | 0.079237  | 0.026326         | 49.8%       |
+| Time per output token mean (s/token)                             | 0.050560  | 0.082836  | 0.032276         | 63.8%       |
+| Time per output token min (s/token)                              | 0.016120  | 0.015833  | -0.000288        | -1.8%       |
+| Time per output token max (s/token)                              | 0.091111  | 0.171244  | 0.080133         | 88.0%       |
+-->
+
 
 ## Cleanup
 
