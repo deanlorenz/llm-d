@@ -171,6 +171,240 @@ Some examples in which you might want to do selective PD might include:
 
 For information on this plugin, see our [`pd-profile-handler` docs in the inference-scheduler](https://github.com/llm-d/llm-d-inference-scheduler/blob/v0.3.0/docs/architecture.md?plain=1#L205-L210)
 
+
+## Benchmarking
+
+To run benchmarks against the installed llm-d stack, you need [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh), a template file from [guides/benchmark](../benchmark/), and a Persistent Volume Claim (PVC) to store the results. Follow the instructions in the [benchmark doc](../benchmark/README.md). 
+
+### Example
+
+This example uses [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh) with the template [pd_guide_template.yaml](../benchmark/pd_guide_template.yaml).
+
+The benchmark launches a pod (`llmdbench-harness-launcher`) that, in this case, uses `vllm-benchmark` with a random synthetic workload named `random_concurrent:`. The results will be stored on the provided PVC, accessible through the `llmdbench-harness-launcher` pod. Each experiment is saved under the `requests` folder, e.g.,/`requests/vllm-benchmark__<experiment ID>_random_concurrent_pd-<model name>` folder. 
+
+Several results files will be created (see [Benchmark doc](../benchmark/README.md)), including a yaml file in a "standard" benchmark report format (see [Benchmark Report](https://github.com/llm-d/llm-d-benchmark/blob/main/docs/benchmark_report.md)).
+
+
+  ```bash
+  curl -L -O https://raw.githubusercontent.com/llm-d/llm-d-benchmark/main/existing_stack/run_only.sh
+  chmod u+x run_only.sh
+  select f in $(
+      curl -s https://api.github.com/repos/llm-d/llm-d/contents/guides/benchmark?ref=main | 
+      sed -n '/[[:space:]]*"name":[[:space:]][[:space:]]*"\(pd.*\_template\.yaml\)".*/ s//\1/p'
+    ); do 
+    curl -LJO "https://raw.githubusercontent.com/llm-d/llm-d/main/guides/benchmark/$f"
+    break
+  done
+  ```
+  
+Choose the `pd_guide_template.yaml` template, then run:
+
+  ```bash
+  export NAMESPACE=llm-d-pd           # replace with your namespace
+  export BENCHMARK_PVC=workload-pvc   # replace with your PVC name
+  export GATEWAY_SVC=infra-inference-scheduling-inference-gateway-istio  # replace with your exact service name
+  envsubst < pd_guide_template.yaml > config.yaml
+  ```
+
+Edit `config.yaml` if further customization is needed, and then run the command
+  ```bash
+  ./run_only.sh -c config.yaml
+  ```
+
+The output will show the progress of the benchmark as it runs 
+<details>
+<summary><b><i>Click</i></b> here to view the expected output</summary>
+
+  ```
+  ...
+  Running main benchmark
+  0%|          | 0/32 [00:00<?, ?it/s]Namespace(backend='vllm', base_url='http://infra-llm-d-pd-inference-gateway-istio.llm-d-pd.svc.cluster.local:80', host='127.0.0.1', port=8000, endpoint='/v1/completions', dataset=None, dataset_name='random', dataset_path=None, max_concurrency=1, model='Qwen/Qwen3-32B', tokenizer=None, best_of=1, use_beam_search=False, num_prompts=32, logprobs=None, request_rate=inf, burstiness=1.0, seed=1769619133, trust_remote_code=False, disable_tqdm=False, profile=False, save_result=True, metadata=None, result_dir=None, result_filename=None, ignore_eos=True, percentile_metrics='ttft,tpot,itl,e2el', metric_percentiles='0.1,1,5,10,25,75,90,95,99,99.9', goodput=None, sonnet_input_len=550, sonnet_output_len=150, sonnet_prefix_len=200, sharegpt_output_len=None, random_input_len=10000, random_output_len=1000, random_range_ratio=1.0, random_prefix_len=0, use_chat_template=False, hf_subset=None, hf_split=None, hf_output_len=None, tokenizer_mode='auto', served_model_name=None, lora_modules=None)
+  Starting initial single prompt test run...
+  Initial test run completed. Starting main benchmark run...
+  Traffic request rate: inf
+  Burstiness factor: 1.0 (Poisson process)
+  Maximum request concurrency: 1
+  100%|██████████| 32/32 [08:27<00:00, 15.86s/it]
+  ============ Serving Benchmark Result ============
+  Successful requests:                     32
+  Benchmark duration (s):                  507.50
+  Total input tokens:                      320000
+  Total generated tokens:                  32000
+  Request throughput (req/s):              0.06
+  Output token throughput (tok/s):         63.05
+  Total Token throughput (tok/s):          693.60
+  ---------------Time to First Token----------------
+  Mean TTFT (ms):                          786.21
+  Median TTFT (ms):                        779.50
+  P0.1 TTFT (ms):                          765.40
+  P1 TTFT (ms):                            765.84
+  P5 TTFT (ms):                            767.06
+  P10 TTFT (ms):                           770.61
+  P25 TTFT (ms):                           772.87
+  P75 TTFT (ms):                           790.01
+  P90 TTFT (ms):                           810.78
+  P95 TTFT (ms):                           828.39
+  P99 TTFT (ms):                           857.94
+  P99.9 TTFT (ms):                         868.32
+  -----Time per Output Token (excl. 1st token)------
+  Mean TPOT (ms):                          15.09
+  Median TPOT (ms):                        14.94
+  P0.1 TPOT (ms):                          14.88
+  P1 TPOT (ms):                            14.88
+  P5 TPOT (ms):                            14.89
+  P10 TPOT (ms):                           14.89
+  P25 TPOT (ms):                           14.91
+  P75 TPOT (ms):                           15.37
+  P90 TPOT (ms):                           15.38
+  P95 TPOT (ms):                           15.38
+  P99 TPOT (ms):                           15.38
+  P99.9 TPOT (ms):                         15.38
+  ---------------Inter-token Latency----------------
+  Mean ITL (ms):                           15.09
+  Median ITL (ms):                         15.10
+  P0.1 ITL (ms):                           10.59
+  P1 ITL (ms):                             11.97
+  P5 ITL (ms):                             13.74
+  P10 ITL (ms):                            14.48
+  P25 ITL (ms):                            14.80
+  P75 ITL (ms):                            15.39
+  P90 ITL (ms):                            15.73
+  P95 ITL (ms):                            16.30
+  P99 ITL (ms):                            18.08
+  P99.9 ITL (ms):                          19.30
+  ----------------End-to-end Latency----------------
+  Mean E2EL (ms):                          15858.73
+  Median E2EL (ms):                        15731.57
+  P0.1 E2EL (ms):                          15631.47
+  P1 E2EL (ms):                            15633.54
+  P5 E2EL (ms):                            15642.52
+  P10 E2EL (ms):                           15656.05
+  P25 E2EL (ms):                           15681.47
+  P75 E2EL (ms):                           16126.04
+  P90 E2EL (ms):                           16140.56
+  P95 E2EL (ms):                           16151.06
+  P99 E2EL (ms):                           16164.34
+  P99.9 E2EL (ms):                         16165.20
+  ==================================================
+  Harness completed successfully.
+  Converting /requests/vllm-benchmark_1769619002_random_concurrent_pd-Qwen32B/vllm-infqps-concurrency1-Qwen3-32B-20260128-170102.json
+  Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method.Results data conversion completed.
+  Harness completed: /usr/local/bin/vllm-benchmark-llm-d-benchmark.sh
+  Running analysis: /usr/local/bin/vllm-benchmark-analyze_results.sh
+  Done. Data is available at "/requests/vllm-benchmark_1769619002_random_concurrent_pd-Qwen32B"
+
+  ===> Wed Jan 28 19:01:04 IST 2026 - ./run_only.sh:63
+  ℹ️ Benchmark workload random_concurrent complete.
+  ------------------------------------------------------------
+
+  ===> Wed Jan 28 19:01:04 IST 2026 - ./run_only.sh:63
+  ✅
+    Experiment ID is 1769619002.
+    All workloads completed.
+    Results should be available in PVC workload-pvc.
+  ...
+  ```
+
+</details>
+
+
+### Benchmarking Report
+  
+When there are multiple benchmarking stage there will a report for each stage. 
+<details>
+<summary><b><i>Click</i></b> here to view the report from the above example</summary>
+  
+  ```yaml
+  metrics:
+    latency:
+      inter_token_latency:
+        mean: 15.087601423219967
+        p0p1: 10.591545172035694
+        p1: 11.973427133634686
+        p10: 14.483867678791285
+        p5: 13.739126781001687
+        p90: 15.732891391962767
+        p95: 16.29792796447873
+        p99: 18.0771388951689
+        p99p9: 19.30122864805172
+        stddev: 0.8951002299547278
+        units: ms/token
+      request_latency:
+        mean: 15858.727096085204
+        p0p1: 15631.466256948188
+        p1: 15633.538376819342
+        p10: 15656.04674918577
+        p5: 15642.515373742208
+        p90: 16140.557371079922
+        p95: 16151.0598433204
+        p99: 16164.34077134356
+        p99p9: 16165.198391264305
+        stddev: 215.98574595159425
+        units: ms
+      time_per_output_token:
+        mean: 15.087601158051735
+        p0p1: 14.879070722897003
+        p1: 14.880180321512622
+        p10: 14.889839736071675
+        p5: 14.886207788393975
+        p50: 14.937521399439754
+        p75: 15.367237667602536
+        p90: 15.377078295962232
+        p95: 15.379760054185299
+        p99: 15.382522214222718
+        p99p9: 15.383329281954465
+        stddev: 0.22005225609728776
+        units: ms/token
+      time_to_first_token:
+        mean: 786.2135391915217
+        p0p1: 765.3994056144729
+        p1: 765.837593683973
+        p10: 770.6111685372889
+        p5: 767.0567221473902
+        p50: 779.4998660683632
+        p75: 790.009684395045
+        p90: 810.7809687033296
+        p95: 828.3857797738165
+        p99: 857.9398899525404
+        p99p9: 868.320517178625
+        stddev: 21.562376993295263
+        units: ms
+    requests:
+      input_length:
+        mean: 10000.0
+        units: count
+      output_length:
+        mean: 1000.0
+        units: count
+      total: 32
+    throughput:
+      output_tokens_per_sec: 63.05418710290435
+      requests_per_sec: 0.06305418710290435
+      total_tokens_per_sec: 693.5960581319479
+    time:
+      duration: 507.5000007180497
+      start: 1769619662.0
+  scenario:
+    load:
+      args:
+        burstiness: 1.0
+        max_concurrency: 1
+        num_prompts: 32
+        request_rate: inf
+      name: vllm-benchmark
+    model:
+      name: Qwen/Qwen3-32B
+  version: '0.1'
+  ```
+
+</details>
+
+<!--
+### Comparing LLM-d scheduling to a simple kubernetes service
+
+TBD
+-->
+
 ## Cleanup
 
 To remove the deployment:
