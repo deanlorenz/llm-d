@@ -1,4 +1,3 @@
-COMING SOON
 endpoint:
   stack_name: &stack_name wide-ep-DS-R1-0528  # user defined name for the stack (results prefix)
   model: &model deepseek-ai/DeepSeek-R1-0528       # Exact HuggingFace model name. Must match stack deployed.
