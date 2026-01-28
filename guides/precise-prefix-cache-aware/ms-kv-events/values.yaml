@@ -57,6 +57,8 @@ decode:
             fieldPath: status.podIP
       - name: VLLM_LOGGING_LEVEL
         value: DEBUG
+      - name: TRITON_CACHE_DIR
+        value: /.triton-cache
     ports:
       - containerPort: 8000
         name: vllm
@@ -78,6 +80,8 @@ decode:
       mountPath: /dev/shm
     - name: torch-compile-cache
       mountPath: /.cache
+    - name: triton-cache
+      mountPath: /.triton-cache
     startupProbe:
       httpGet:
         path: /v1/models
@@ -109,7 +113,9 @@ decode:
     emptyDir:
       medium: Memory
       sizeLimit: 20Gi
-        
+  - name: triton-cache
+    emptyDir: {}
+
 # PD disabled in this example
 prefill:
   create: false
