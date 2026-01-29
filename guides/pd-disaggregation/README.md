@@ -178,7 +178,7 @@ To run benchmarks against the installed llm-d stack, you need [run_only.sh](http
 
 ### Example
 
-This example uses [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh) with the template [pd_guide_template.yaml](../benchmark/pd_guide_template.yaml).
+This example uses [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh) with the template [pd_guide_template.yaml](../benchmark/pd_guide_template.yaml). The example runs against an llm-d stack with PD-Disaggregation enabled, serving Qwen3-32B with 1 prefill pod and 2 decode pods (2 GPUs per each pod).
 
 The benchmark launches a pod (`llmdbench-harness-launcher`) that, in this case, uses `vllm-benchmark` with a random synthetic workload named `random_concurrent:`. The results will be stored on the provided PVC, accessible through the `llmdbench-harness-launcher` pod. Each experiment is saved under the `requests` folder, e.g.,/`requests/vllm-benchmark__<experiment ID>_random_concurrent_pd-<model name>` folder. 
 
