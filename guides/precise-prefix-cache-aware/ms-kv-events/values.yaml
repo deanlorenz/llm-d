@@ -30,6 +30,7 @@ decode:
     image: vllm/vllm-openai:v0.14.1-cu130
     modelCommand: vllmServe
     args:
+      - "--block-size=64"
       - "--kv-events-config"
       - |- 
         {
