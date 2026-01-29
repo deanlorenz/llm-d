@@ -184,6 +184,7 @@ The benchmark launches a pod (`llmdbench-harness-launcher`) that, in this case, 
 
 Several results files will be created (see [Benchmark doc](../benchmark/README.md)), including a yaml file in a "standard" benchmark report format (see [Benchmark Report](https://github.com/llm-d/llm-d-benchmark/blob/main/docs/benchmark_report.md)).
 
+The `bash` commands below downloads the benchmark runner script (`run_only.sh`), then presents an interactive menu of Precise-Prefix benchmark templates from the llm-d repository's [`guides/benchmark/`](guides/benchmark/) directory. Once the user selects a template, it downloads that specific YAML configuration file for running benchmarks.
 
   ```bash
   curl -L -O https://raw.githubusercontent.com/llm-d/llm-d-benchmark/main/existing_stack/run_only.sh
