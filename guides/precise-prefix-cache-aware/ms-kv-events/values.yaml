@@ -30,10 +30,6 @@ decode:
     image: vllm/vllm-openai:v0.14.1-cu130
     modelCommand: vllmServe
     args:
-#      - "--host=0.0.0.0"
-#      - "--port=8000"
-      - "--block-size=64"
-      - "--prefix-caching-hash-algo=sha256_cbor"
       - "--kv-events-config"
       - |- 
         {
