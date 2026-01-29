@@ -81,9 +81,9 @@ kubectl apply -f httproute.gke.yaml -n ${NAMESPACE}
 ```bash
 helm list -n ${NAMESPACE}
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-gaie-kv-events  llm-d-precise   1               2025-09-25 21:36:52.452999581 +0000 UTC deployed        inferencepool-v1.2.0            v1.2.0
-infra-kv-events llm-d-precise   1               2025-09-25 21:36:50.848300265 +0000 UTC deployed        llm-d-infra-v1.3.6              v0.3.0     
-ms-kv-events    llm-d-precise   1               2025-09-25 21:36:55.955958022 +0000 UTC deployed        llm-d-modelservice-v0.3.17      v0.3.0 
+gaie-kv-events  llm-d-precise  1               2026-01-28 18:16:14.302723 +0200 IST    deployed        inferencepool-v1.3.0            v1.3.0     
+infra-kv-events llm-d-precise  1               2026-01-28 18:16:08.733157 +0200 IST    deployed        llm-d-infra-v1.3.6              v0.3.0     
+ms-kv-events    llm-d-precise  1               2026-01-28 18:16:26.907329 +0200 IST    deployed        llm-d-modelservice-v0.3.17      v0.3.0 
 ```
 
 - Out of the box with this example you should have the following resources:
@@ -91,25 +91,31 @@ ms-kv-events    llm-d-precise   1               2025-09-25 21:36:55.955958022 +0
 ```bash
 kubectl get all -n ${NAMESPACE}
 NAME                                                          READY   STATUS    RESTARTS   AGE
-pod/gaie-kv-events-epp-687b78968b-wvswh                       1/1     Running   0          80s
-pod/infra-kv-events-inference-gateway-istio-949d87f84-zvsp2   1/1     Running   0          85s
-pod/ms-kv-events-llm-d-modelservice-decode-b874d48d9-bgm5r    1/1     Running   0          75s
-pod/ms-kv-events-llm-d-modelservice-decode-b874d48d9-ph64c    1/1     Running   0          75s
+pod/gaie-kv-events-epp-9c9849bf6-ftcfb                        1/1     Running     0          16h
+pod/infra-kv-events-inference-gateway-istio-df9977d89-5zp6z   1/1     Running     0          16h
+pod/ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-dqv8d   1/1     Running     0          16h
+pod/ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-fcbmf   1/1     Running     0          16h
+pod/ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-frpk8   1/1     Running     0          16h
+pod/ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-g72ls   1/1     Running     0          16h
+pod/ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-kf8r8   1/1     Running     0          16h
+pod/ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-kqhd2   1/1     Running     0          16h
+pod/ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-t8srp   1/1     Running     0          16h
+pod/ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-vnnnv   1/1     Running     0          16h
 
 NAME                                              TYPE           CLUSTER-IP   EXTERNAL-IP   PORT(S)                        AGE
-service/gaie-kv-events-epp                        ClusterIP      10.16.2.44   <none>        9002/TCP,9090/TCP,5557/TCP     81s
-service/gaie-kv-events-ip-805c964d                ClusterIP      None         <none>        54321/TCP                      75s
-service/infra-kv-events-inference-gateway-istio   ClusterIP      10.16.1.30   10.16.4.2     15021:32033/TCP,80:39332/TCP   86s
+service/gaie-kv-events-epp                        ClusterIP   172.30.193.29    <none>        9002/TCP,9090/TCP,5557/TCP   16h
+service/gaie-kv-events-ip-805c964d                ClusterIP   None             <none>        54321/TCP                    16h
+service/infra-kv-events-inference-gateway-istio   ClusterIP   172.30.18.110    <none>        15021/TCP,80/TCP             16h
 
 NAME                                                      READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/gaie-kv-events-epp                        1/1     1            1           81s
-deployment.apps/infra-kv-events-inference-gateway-istio   1/1     1            1           86s
-deployment.apps/ms-kv-events-llm-d-modelservice-decode    2/2     2            2           76s
+deployment.apps/gaie-kv-events-epp                        1/1     1            1           16h
+deployment.apps/infra-kv-events-inference-gateway-istio   1/1     1            1           16h
+deployment.apps/ms-kv-events-llm-d-modelservice-decode    8/8     8            8           16h
 
 NAME                                                                DESIRED   CURRENT   READY   AGE
-replicaset.apps/gaie-kv-events-epp-687b78968b                       1         1         1       81s
-replicaset.apps/infra-kv-events-inference-gateway-istio-949d87f84   1         1         1       86s
-replicaset.apps/ms-kv-events-llm-d-modelservice-decode-b874d48d9    2         2         2       76s
+replicaset.apps/gaie-kv-events-epp-9c9849bf6                        1         1         1       16h
+replicaset.apps/infra-kv-events-inference-gateway-istio-df9977d89   1         1         1       16h
+replicaset.apps/ms-kv-events-llm-d-modelservice-decode-548bfbc7d6   8         8         8       16h
 ```
 
 **_NOTE:_** This assumes no other guide deployments in your given `${NAMESPACE}` and you have not changed the default release names via the `${RELEASE_NAME}` environment variable.
@@ -127,7 +133,7 @@ export LONG_TEXT_200_WORDS="Lorem ipsum dolor sit amet, consectetur adipiscing e
 curl -s http://localhost:8000/v1/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "Qwen/Qwen3-0.6B",
+    "model": "Qwen/Qwen3-32B",
     "prompt": "'"$LONG_TEXT_200_WORDS"'",
     "max_tokens": 50
   }' | jq
@@ -142,8 +148,14 @@ kubectl logs -l inferencepool=gaie-kv-events-epp -n ${NAMESPACE} --tail 100 | gr
 You should see output similar to:
 
 ```json
-{"level":"Level(-4)","ts":"2025-10-07T16:07:36Z","caller":"framework/scheduler_profile.go:165","msg":"Calculated score","x-request-id":"77790804-deb4-441a-9a03-d771d8e20778","objectiveKey":"","incomingModelName":"Qwen/Qwen3-0.6B","targetModelName":"Qwen/Qwen3-0.6B","priority":0,"plugin":"precise-prefix-cache-scorer/precise-prefix-cache-scorer","endpoint":{"name":"ms-kv-events-llm-d-modelservice-decode-75499f8dc5-pbp84","namespace":"llm-d-precise"},"score":0}
-{"level":"Level(-4)","ts":"2025-10-07T16:07:36Z","caller":"framework/scheduler_profile.go:165","msg":"Calculated score","x-request-id":"77790804-deb4-441a-9a03-d771d8e20778","objectiveKey":"","incomingModelName":"Qwen/Qwen3-0.6B","targetModelName":"Qwen/Qwen3-0.6B","priority":0,"plugin":"precise-prefix-cache-scorer/precise-prefix-cache-scorer","endpoint":{"name":"ms-kv-events-llm-d-modelservice-decode-75499f8dc5-kgnqh","namespace":"llm-d-precise"},"score":0}
+{"level":"Level(-4)","ts":"2026-01-29T08:59:51Z","caller":"framework/scheduler_profile.go:165","msg":"Calculated score","x-request-id":"b2b768f3-ad23-4867-9505-a69caacc01d3","objectiveKey":"","incomingModelName":"Qwen/Qwen3-32B","targetModelName":"Qwen/Qwen3-32B","priority":0,"plugin":"precise-prefix-cache-scorer/precise-prefix-cache-scorer","endpoint":{"name":"ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-g72ls-rank-0","namespace":"dpikus-precise"},"score":0}
+{"level":"Level(-4)","ts":"2026-01-29T08:59:51Z","caller":"framework/scheduler_profile.go:165","msg":"Calculated score","x-request-id":"b2b768f3-ad23-4867-9505-a69caacc01d3","objectiveKey":"","incomingModelName":"Qwen/Qwen3-32B","targetModelName":"Qwen/Qwen3-32B","priority":0,"plugin":"precise-prefix-cache-scorer/precise-prefix-cache-scorer","endpoint":{"name":"ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-kf8r8-rank-0","namespace":"dpikus-precise"},"score":0}
+{"level":"Level(-4)","ts":"2026-01-29T08:59:51Z","caller":"framework/scheduler_profile.go:165","msg":"Calculated score","x-request-id":"b2b768f3-ad23-4867-9505-a69caacc01d3","objectiveKey":"","incomingModelName":"Qwen/Qwen3-32B","targetModelName":"Qwen/Qwen3-32B","priority":0,"plugin":"precise-prefix-cache-scorer/precise-prefix-cache-scorer","endpoint":{"name":"ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-kqhd2-rank-0","namespace":"dpikus-precise"},"score":0}
+{"level":"Level(-4)","ts":"2026-01-29T08:59:51Z","caller":"framework/scheduler_profile.go:165","msg":"Calculated score","x-request-id":"b2b768f3-ad23-4867-9505-a69caacc01d3","objectiveKey":"","incomingModelName":"Qwen/Qwen3-32B","targetModelName":"Qwen/Qwen3-32B","priority":0,"plugin":"precise-prefix-cache-scorer/precise-prefix-cache-scorer","endpoint":{"name":"ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-dqv8d-rank-0","namespace":"dpikus-precise"},"score":0}
+{"level":"Level(-4)","ts":"2026-01-29T08:59:51Z","caller":"framework/scheduler_profile.go:165","msg":"Calculated score","x-request-id":"b2b768f3-ad23-4867-9505-a69caacc01d3","objectiveKey":"","incomingModelName":"Qwen/Qwen3-32B","targetModelName":"Qwen/Qwen3-32B","priority":0,"plugin":"precise-prefix-cache-scorer/precise-prefix-cache-scorer","endpoint":{"name":"ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-t8srp-rank-0","namespace":"dpikus-precise"},"score":0}
+{"level":"Level(-4)","ts":"2026-01-29T08:59:51Z","caller":"framework/scheduler_profile.go:165","msg":"Calculated score","x-request-id":"b2b768f3-ad23-4867-9505-a69caacc01d3","objectiveKey":"","incomingModelName":"Qwen/Qwen3-32B","targetModelName":"Qwen/Qwen3-32B","priority":0,"plugin":"precise-prefix-cache-scorer/precise-prefix-cache-scorer","endpoint":{"name":"ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-frpk8-rank-0","namespace":"dpikus-precise"},"score":0}
+{"level":"Level(-4)","ts":"2026-01-29T08:59:51Z","caller":"framework/scheduler_profile.go:165","msg":"Calculated score","x-request-id":"b2b768f3-ad23-4867-9505-a69caacc01d3","objectiveKey":"","incomingModelName":"Qwen/Qwen3-32B","targetModelName":"Qwen/Qwen3-32B","priority":0,"plugin":"precise-prefix-cache-scorer/precise-prefix-cache-scorer","endpoint":{"name":"ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-fcbmf-rank-0","namespace":"dpikus-precise"},"score":0}
+{"level":"Level(-4)","ts":"2026-01-29T08:59:51Z","caller":"framework/scheduler_profile.go:165","msg":"Calculated score","x-request-id":"b2b768f3-ad23-4867-9505-a69caacc01d3","objectiveKey":"","incomingModelName":"Qwen/Qwen3-32B","targetModelName":"Qwen/Qwen3-32B","priority":0,"plugin":"precise-prefix-cache-scorer/precise-prefix-cache-scorer","endpoint":{"name":"ms-kv-events-llm-d-modelservice-decode-548bfbc7d6-vnnnv-rank-0","namespace":"dpikus-precise"},"score":0}
 ```
 
 1. Repeat the steps above to see the prefix-cache-scorer in action
@@ -188,9 +200,9 @@ Several results files will be created (see [Benchmark doc](../benchmark/README.m
 Choose the `precise_guide_template.yaml` template, then run:
 
   ```bash
-  export NAMESPACE=llm-d-inference-scheduler     # replace with your namespace
+  export NAMESPACE=llm-d-precise     # replace with your namespace
   export BENCHMARK_PVC=workload-pvc   # replace with your PVC name
-  export GATEWAY_SVC=infra-inference-scheduling-inference-gateway-istio  # replace with your exact service name
+  export GATEWAY_SVC=infra-kv-events-inference-gateway-istio  # replace with your exact service name
   envsubst < precise_guide_template.yaml > config.yaml
   ```
 
@@ -205,29 +217,59 @@ The output will show the progress of the `inference-perf` benchmark as it runs
 
   ```
   ...
-  2026-01-14 12:58:15,472 - inference_perf.client.filestorage.local - INFO - Report files will be stored at: /requests/inference-perf_1768395442_shared_prefix_synthetic_inference-scheduling-Qwen3-0.6B
-  2026-01-14 12:58:18,414 - inference_perf.loadgen.load_generator - INFO - Stage 0 - run started
-  Stage 0 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.06s/it] 
-  2026-01-14 12:59:10,503 - inference_perf.loadgen.load_generator - INFO - Stage 0 - run completed
-  2026-01-14 12:59:11,504 - inference_perf.loadgen.load_generator - INFO - Stage 1 - run started
-  Stage 1 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.05s/it]   
-  2026-01-14 13:00:03,566 - inference_perf.loadgen.load_generator - INFO - Stage 1 - run completed
-  2026-01-14 13:00:04,569 - inference_perf.loadgen.load_generator - INFO - Stage 2 - run started
-  Stage 2 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.05s/it]   
-  2026-01-14 13:00:56,620 - inference_perf.loadgen.load_generator - INFO - Stage 2 - run completed
-  Stage 3 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]2026-01-14 13:00:57,621 - inference_perf.loadgen.load_generator - INFO - Stage 3 - run started
-  Stage 3 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.14s/it]  2026-01-14 13:01:49,675 - inference_perf.loadgen.load_generator - INFO - Stage 3 - run completed
-  Stage 3 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.05s/it]
-  2026-01-14 13:01:50,677 - inference_perf.loadgen.load_generator - INFO - Stage 4 - run started
-  Stage 4 progress:  98%|█████████▊| 0.975/1.0 [00:51<00:01, 53.81s/it]2026-01-14 13:02:42,726 - inference_perf.loadgen.load_generator - INFO - Stage 4 - run completed
-  Stage 4 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.05s/it]  
-  2026-01-14 13:02:43,727 - inference_perf.loadgen.load_generator - INFO - Stage 5 - run started
-  Stage 5 progress:  98%|█████████▊| 0.976/1.0 [00:51<00:01, 47.18s/it]             2026-01-14 13:03:35,770 - inference_perf.loadgen.load_generator - INFO - Stage 5 - run completed
-  Stage 5 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.04s/it]  
-  2026-01-14 13:03:36,771 - inference_perf.loadgen.load_generator - INFO - Stage 6 - run started
-  Stage 6 progress: 100%|██████████| 1.0/1.0 [00:52<00:00, 52.05s/it]   
-  2026-01-14 13:04:28,826 - inference_perf.loadgen.load_generator - INFO - Stage 6 - run completed
-  2026-01-14 13:04:29,932 - inference_perf.reportgen.base - INFO - Generating Reports...
+  2026-01-28 18:06:20,130 - inference_perf.client.filestorage.local - INFO - Report files will be stored at: /requests/inference-perf_1769623549_shared_prefix-precise-guide-Qwen3-32B
+  2026-01-28 18:06:23,584 - inference_perf.loadgen.load_generator - INFO - Stage 0 - run started
+  Stage 0 progress: 100%|█████████▉| 0.996/1.0 [01:19<00:00, 35.86s/it]             2026-01-28 18:07:43,989 - inference_perf.loadgen.load_generator - INFO - Stage 0 - run completed
+  Stage 0 progress: 100%|██████████| 1.0/1.0 [01:20<00:00, 80.08s/it]  
+  2026-01-28 18:07:44,990 - inference_perf.loadgen.load_generator - INFO - Stage 1 - run started
+  Stage 1 progress: 100%|██████████| 1.0/1.0 [00:38<00:00, 38.04s/it]                 
+  2026-01-28 18:08:23,032 - inference_perf.loadgen.load_generator - INFO - Stage 1 - run completed
+  Stage 2 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]2026-01-28 18:08:24,033 - inference_perf.loadgen.load_generator - INFO - Stage 2 - run started
+  Stage 2 progress:  98%|█████████▊| 0.98/1.0 [00:42<00:00, 17.81s/it]2026-01-28 18:09:07,078 - inference_perf.loadgen.load_generator - INFO - Stage 2 - run completed
+  Stage 2 progress: 100%|██████████| 1.0/1.0 [00:43<00:00, 43.04s/it] 
+  2026-01-28 18:09:08,079 - inference_perf.loadgen.load_generator - INFO - Stage 3 - run started
+  Stage 3 progress: 100%|██████████| 1.0/1.0 [00:43<00:00, 43.05s/it]                 
+  2026-01-28 18:09:51,133 - inference_perf.loadgen.load_generator - INFO - Stage 3 - run completed
+  Stage 4 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]2026-01-28 18:09:52,134 - inference_perf.loadgen.load_generator - INFO - Stage 4 - run started
+  Stage 4 progress: 100%|██████████| 1.0/1.0 [01:12<00:00, 72.07s/it]                   
+  2026-01-28 18:11:04,214 - inference_perf.loadgen.load_generator - INFO - Stage 4 - run completed
+  2026-01-28 18:11:05,215 - inference_perf.loadgen.load_generator - INFO - Stage 5 - run started
+  Stage 5 progress: 100%|██████████| 1.0/1.0 [01:07<00:00, 67.08s/it]                  
+  2026-01-28 18:12:12,296 - inference_perf.loadgen.load_generator - INFO - Stage 5 - run completed
+  Stage 6 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]2026-01-28 18:12:13,297 - inference_perf.loadgen.load_generator - INFO - Stage 6 - run started
+  Stage 6 progress:  99%|█████████▊| 0.9866666666666667/1.0 [01:04<00:00, 28.03s/it]2026-01-28 18:13:18,367 - inference_perf.loadgen.load_generator - INFO - Stage 6 - run completed
+  Stage 6 progress: 100%|██████████| 1.0/1.0 [01:05<00:00, 65.06s/it]               
+  2026-01-28 18:13:19,367 - inference_perf.loadgen.load_generator - INFO - Stage 7 - run started
+  Stage 7 progress:  99%|█████████▊| 0.9866666666666667/1.0 [01:01<00:00, 26.38s/it]2026-01-28 18:14:21,444 - inference_perf.loadgen.load_generator - INFO - Stage 7 - run completed
+  Stage 7 progress: 100%|██████████| 1.0/1.0 [01:02<00:00, 62.07s/it]               
+  Stage 8 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]2026-01-28 18:14:22,445 - inference_perf.loadgen.load_generator - INFO - Stage 8 - run started
+  Stage 8 progress: 100%|██████████| 1.0/1.0 [00:59<00:00, 59.07s/it]                 
+  2026-01-28 18:15:21,531 - inference_perf.loadgen.load_generator - INFO - Stage 8 - run completed
+  2026-01-28 18:15:22,531 - inference_perf.loadgen.load_generator - INFO - Stage 9 - run started
+  Stage 9 progress: 100%|██████████| 1.0/1.0 [01:49<00:00, 109.11s/it]                 
+  2026-01-28 18:17:11,663 - inference_perf.loadgen.load_generator - INFO - Stage 9 - run completed
+  2026-01-28 18:17:12,665 - inference_perf.loadgen.load_generator - INFO - Stage 10 - run started
+  Stage 10 progress: 100%|█████████▉| 0.9974160206718347/1.0 [01:54<00:00, 230.22s/it]2026-01-28 18:19:07,802 - inference_perf.loadgen.load_generator - INFO - Stage 10 - run completed
+  Stage 10 progress: 100%|██████████| 1.0/1.0 [01:55<00:00, 115.12s/it]               
+  Stage 11 progress:   0%|          | 0/1.0 [00:00<?, ?it/s]2026-01-28 18:19:08,803 - inference_perf.loadgen.load_generator - INFO - Stage 11 - run started
+  Stage 11 progress: 100%|█████████▉| 0.9980237154150198/1.0 [01:50<00:00, 131.50s/it]2026-01-28 18:20:59,920 - inference_perf.loadgen.load_generator - INFO - Stage 11 - run completed
+  Stage 11 progress: 100%|██████████| 1.0/1.0 [01:51<00:00, 111.10s/it]               
+  2026-01-28 18:21:00,921 - inference_perf.loadgen.load_generator - INFO - Stage 12 - run started
+  Stage 12 progress: 100%|█████████▉| 0.998639455782313/1.0 [01:46<00:00, 120.81s/it] 2026-01-28 18:22:48,084 - inference_perf.loadgen.load_generator - INFO - Stage 12 - run completed
+  Stage 12 progress: 100%|██████████| 1.0/1.0 [01:47<00:00, 107.13s/it]              
+  2026-01-28 18:22:49,085 - inference_perf.loadgen.load_generator - INFO - Stage 13 - run started
+  Stage 13 progress: 100%|██████████| 1.0/1.0 [01:49<00:00, 157.90s/it]               2026-01-28 18:24:38,230 - inference_perf.loadgen.load_generator - INFO - Stage 13 - run completed
+  Stage 13 progress: 100%|██████████| 1.0/1.0 [01:49<00:00, 109.13s/it]
+  2026-01-28 18:24:39,231 - inference_perf.loadgen.load_generator - INFO - Stage 14 - run started
+  Stage 14 progress: 100%|█████████▉| 0.997979797979798/1.0 [01:45<00:00, 103.83s/it] 2026-01-28 18:26:26,763 - inference_perf.loadgen.load_generator - INFO - Stage 14 - run completed
+  Stage 14 progress: 100%|██████████| 1.0/1.0 [01:47<00:00, 107.13s/it]              
+  2026-01-28 18:26:27,764 - inference_perf.loadgen.load_generator - INFO - Stage 15 - run started
+  Stage 15 progress: 100%|██████████| 1.0/1.0 [01:48<00:00, 108.14s/it]                  
+  2026-01-28 18:28:15,925 - inference_perf.loadgen.load_generator - INFO - Stage 15 - run completed
+  2026-01-28 18:28:16,926 - inference_perf.loadgen.load_generator - INFO - Stage 16 - run started
+  Stage 16 progress: 100%|█████████▉| 0.9973333333333333/1.0 [01:49<00:00, 219.58s/it]2026-01-28 18:30:07,091 - inference_perf.loadgen.load_generator - INFO - Stage 16 - run completed
+  Stage 16 progress: 100%|██████████| 1.0/1.0 [01:50<00:00, 110.15s/it]               
+  2026-01-28 18:30:08,098 - inference_perf.reportgen.base - INFO - Generating Reports...
   ...
   ```
 
@@ -244,126 +286,126 @@ There is a report for each stage.
   metrics:
     latency:
       inter_token_latency:
-        max: 0.6592390739824623
-        mean: 0.02900245059172652
-        min: 6.791960913687944e-06
-        p0p1: 3.033865801990032e-05
-        p1: 0.015563686798559502
-        p10: 0.019321368023520337
-        p25: 0.021469394996529445
-        p5: 0.018202303716680034
-        p50: 0.023767696984577924
-        p75: 0.025065310997888446
-        p90: 0.027191252261400223
-        p95: 0.027449985832208767
-        p99: 0.15992223912733625
-        p99p9: 0.6424302404634074
+        max: 0.18811781704425812
+        mean: 0.020669583557040024
+        min: 5.517038516700268e-06
+        p0p1: 2.6719751942437142e-05
+        p1: 0.014419194809161127
+        p10: 0.01656536371447146
+        p25: 0.018567895487649366
+        p5: 0.015728384861722587
+        p50: 0.020695073500974104
+        p75: 0.021503399751964025
+        p90: 0.02207457079202868
+        p95: 0.022546104292268866
+        p99: 0.08946080405090495
+        p99p9: 0.10259400638758956
         units: s/token
       normalized_time_per_output_token:
-        max: 1.130066460411078
-        mean: 0.07455394562117204
-        min: 0.021596552523126054
-        p0p1: 0.021836634834898814
-        p1: 0.022878874791001626
-        p10: 0.026802186641450707
-        p25: 0.028771440401583526
-        p5: 0.026354957595733888
-        p50: 0.03114238682377349
-        p75: 0.03549204396843876
-        p90: 0.040007868857358464
-        p95: 0.27433672404418163
-        p99: 0.9176630568937185
-        p99p9: 1.0930528030979383
+        max: 0.717500958187884
+        mean: 0.04021876003301928
+        min: 0.01744550473873396
+        p0p1: 0.01751962216022992
+        p1: 0.0180509185810905
+        p10: 0.01923465710929764
+        p25: 0.02040626925639579
+        p5: 0.018997717847623295
+        p50: 0.021183353236022558
+        p75: 0.021865379507869025
+        p90: 0.022936470821125987
+        p95: 0.07059941448146335
+        p99: 0.6672186557748682
+        p99p9: 0.7082893342302221
         units: s/token
       request_latency:
-        max: 39.88552725099726
-        mean: 31.201138343144265
-        min: 21.51016631303355
-        p0p1: 21.513322889837728
-        p1: 22.639596664793206
-        p10: 26.65310029689572
-        p25: 28.59833365402301
-        p5: 26.180801641245488
-        p50: 30.826933004515013
-        p75: 33.71675194177078
-        p90: 36.34111310068401
-        p95: 38.48921600250468
-        p99: 39.51040306784445
-        p99p9: 39.86624288078066
+        max: 22.989790733961854
+        mean: 20.847309030755714
+        min: 17.35827721504029
+        p0p1: 17.44975291375129
+        p1: 17.961483361392748
+        p10: 19.066985952935646
+        p25: 20.198816913514747
+        p5: 18.737510592667967
+        p50: 20.977808750525583
+        p75: 21.562361991251237
+        p90: 22.255666058021596
+        p95: 22.56433772156015
+        p99: 22.960098422522424
+        p99p9: 22.98521691379562
         units: s
       time_per_output_token:
-        max: 0.03929050936899148
-        mean: 0.029002450591726524
-        min: 0.020733375451993198
-        p0p1: 0.02076210723397689
-        p1: 0.02197605639129935
-        p10: 0.023985525072098245
-        p25: 0.025961909717472736
-        p5: 0.023094925146602326
-        p50: 0.028610963689017808
-        p75: 0.031485105915271566
-        p90: 0.0345776737117616
-        p95: 0.03695713067791075
-        p99: 0.0387846155043639
-        p99p9: 0.039217750429807116
+        max: 0.022786254265985916
+        mean: 0.020669583557040027
+        min: 0.017162352968996857
+        p0p1: 0.017250305588040735
+        p1: 0.01777372067991237
+        p10: 0.018948828270088418
+        p25: 0.020017497138731414
+        p5: 0.01861606290267373
+        p50: 0.020810300373967038
+        p75: 0.021364415241492678
+        p90: 0.022014989444997628
+        p95: 0.022341811860160668
+        p99: 0.02270649872458249
+        p99p9: 0.02278452591815719
         units: s/token
       time_to_first_token:
-        max: 7.810191813041456
-        mean: 2.1675998359240474
-        min: 0.061178788950201124
-        p0p1: 0.06309354188054567
-        p1: 0.07586976393766236
-        p10: 0.5658667664858513
-        p25: 0.9366489192761946
-        p5: 0.541157353669405
-        p50: 1.947954576491611
-        p75: 3.071206600754522
-        p90: 4.036028380162316
-        p95: 5.002833548447233
-        p99: 7.078293362634135
-        p99p9: 7.7845550583496825
+        max: 0.37973733502440155
+        mean: 0.1458328293156228
+        min: 0.05756738397758454
+        p0p1: 0.057710750947357156
+        p1: 0.058549812618875874
+        p10: 0.07117205987451598
+        p25: 0.07867017023090739
+        p5: 0.06478812359273434
+        p50: 0.15742571302689612
+        p75: 0.17041571525624022
+        p90: 0.21869741418631744
+        p95: 0.24442302147799633
+        p99: 0.3229195393121335
+        p99p9: 0.369758901104099
         units: s
     requests:
       failures: 0
       input_length:
-        max: 7669.0
-        mean: 7583.23
-        min: 7523.0
-        p0p1: 7523.597
-        p1: 7526.0
-        p10: 7545.0
-        p25: 7560.25
-        p5: 7536.0
-        p50: 7583.5
-        p75: 7603.0
-        p90: 7622.1
-        p95: 7636.05
-        p99: 7649.02
-        p99p9: 7665.418000000001
+        max: 7678.0
+        mean: 7578.415
+        min: 7510.0
+        p0p1: 7512.388
+        p1: 7523.98
+        p10: 7543.9
+        p25: 7557.0
+        p5: 7535.9
+        p50: 7575.0
+        p75: 7596.25
+        p90: 7618.0
+        p95: 7629.15
+        p99: 7653.04
+        p99p9: 7673.821
         units: count
       output_length:
-        max: 1000.0
-        mean: 922.125
-        min: 33.0
-        p0p1: 33.0
-        p1: 33.0
-        p10: 940.1
+        max: 1001.0
+        mean: 938.355
+        min: 32.0
+        p0p1: 32.0
+        p1: 32.99
+        p10: 955.6
         p25: 990.75
-        p5: 122.60000000000005
+        p5: 316.00000000000006
         p50: 997.0
         p75: 1000.0
         p90: 1000.0
         p95: 1000.0
         p99: 1000.0
-        p99p9: 1000.0
+        p99p9: 1000.801
         units: count
       total: 200
     throughput:
-      output_tokens_per_sec: 3502.384763911175
-      requests_per_sec: 3.798167020643812
-      total_tokens_per_sec: 32304.758859867947
+      output_tokens_per_sec: 4511.146742060757
+      requests_per_sec: 4.807505413261246
+      total_tokens_per_sec: 40944.41787850098
     time:
-      duration: 22.336875702952966
+      duration: 21.37610672903247
   scenario:
     load:
       args:
@@ -482,7 +524,7 @@ There is a report for each stage.
         storage:
           google_cloud_storage: null
           local_storage:
-            path: /requests/inference-perf_1769545356_Shared_prefix_gateway_precise-guide-Qwen3-32B
+            path: /requests/inference-perf_1769623549_shared_prefix_precise-guide-Qwen3-32B
             report_file_prefix: null
           simple_storage_service: null
         tokenizer:
