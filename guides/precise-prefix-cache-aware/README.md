@@ -547,22 +547,22 @@ We examine the overall behavior of the entire workload of the example above, usi
 `inference-perf`.   
 For comparison, we ran the same workload on a k8s service endpoint that directly uses the vLLM pods as backends.
 
-- **Throughput**: Requests/sec 0.8% ; Output tokens/sec 0.5% 
-- **Latency**: TTFT 6.0% slower ; E2E request latency 3.8% slower
-- **Per-token speed**: Time per output token ‑0.2% (slightly faster)
+- **Throughput**: Requests/sec **108.7%** ; Output tokens/sec **109.4%**
+- **Latency**: TTFT **-99.7%** ; E2E request latency **-42.8%**
+- **Per-token speed**: Time per output token **13.0%** (**slower**)
 
-| Metric                                                           | k8s      | llmd      | Δ (llmd - k8s) | Δ% vs k8s |
-|------------------------------------------------------------------|----------|-----------|----------------|-----------|
-| Requests/sec                                                     | 5.0788   | 5.1203    | 0.0415         | 0.8%      |
-| Input tokens/sec                                                 | 38,491.14| 38,825.59 | 334.45         | 0.9%      |
-| Output tokens/sec                                                | 4,773.61 | 4,795.12  | 21.51          | 0.5%      |
-| Total tokens/sec                                                 | 43,264.75| 43,620.71 | 355.96         | 0.8%      |
-| Approx. gen speed (1/median time_per_output_token) [tok/s]       | 18.870   | 18.913    | 0.0430         | 0.2%      |
-| Request latency (s)                                              | 108.052  | 112.138   | 4.087          | 3.8%      |
-| TTFT (s)                                                         | 55.996   | 59.362    | 3.366          | 6.0%      |
-| Time/output token (ms)                                           | 52.99    | 52.87     | -0.121         | -0.2%     |
-| Inter-token latency (ms)                                         | 31.92    | 31.77     | -0.153         | -0.5%     |
 
+| Metric (median)                                                   | k8s         | llmd        | Δ (llmd - k8s) | Δ% vs k8s |
+|:------------------------------------------------------------------|:------------|:------------|:---------------|:----------|
+| Requests/sec                                                      | 5.7542      | 12.0101     | 6.2559         | 108.7%    |
+| Input tokens/sec                                                  | 43,609.4980 | 91,001.8874 | 47,392.3894    | 108.7%    |
+| Output tokens/sec                                                 | 5,390.6289  | 11,290.1722 | 5,899.5433     | 109.4%    |
+| Total tokens/sec                                                  | 49,000.1269 | 102,292.0596| 53,291.9326    | 108.8%    |
+| Approx. gen speed (1 / time_per_output_token) [tok/s/request]     | 21.614      | 19.121      | -2.493         | -11.5%    |
+| Request latency (s)                                               | 93.156      | 53.263      | -39.893        | -42.8%    |
+| TTFT (s)                                                          | 47.676      | 0.156       | -47.520        | -99.7%    |
+| Time/output token (ms)                                            | 46.27       | 52.30       | 6.03           | 13.0%     |
+| Inter-token latency (ms)                                          | 30.57       | 41.46       | 10.89          | 35.6%     |
 
 ## Cleanup
 
