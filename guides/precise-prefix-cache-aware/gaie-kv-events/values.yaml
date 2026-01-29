@@ -52,11 +52,11 @@ inferenceExtension:
                 modelName: "Qwen/Qwen3-32B"
                 hf:
                   tokenizersCacheDir: "/tmp/tokenizers"
-            # kvEventsConfig:
-            #   topicFilter: "kv@"
-            #   concurrency: 4
-            #   discoverPods: false
-            #   zmqEndpoint: "tcp://*:5557"
+            kvEventsConfig:
+              topicFilter: "kv@"
+              concurrency: 4
+              discoverPods: false
+              zmqEndpoint: "tcp://*:5557"
         - type: kv-cache-utilization-scorer
         - type: queue-scorer
         - type: max-score-picker
