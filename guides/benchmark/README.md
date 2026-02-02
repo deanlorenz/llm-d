@@ -6,7 +6,7 @@
 - This is [relative](../inference_scheduling/ms-inference-scheduling/values.yaml#L17-L22)
 - This is absolute in [dean/test123](https://github.com/deanlorenz/llm-d/blob/test123/guides/inference-scheduling/ms-inference-scheduling/values.yaml#L17-L22)
 - This is absolute in [main](https://github.com/llm-d/llm-d/blob/main/guides/inference-scheduling/ms-inference-scheduling/values.yaml#L17-L22)
-- And this is to the blob https://github.com/llm-d/llm-d/blob/a23b7b8cc30232c3adeb2cfe80556333f86b2e71/guides/inference-scheduling/ms-inference-scheduling/values.yaml#L17-L22
+- And this is to the blob (https://github.com/llm-d/llm-d/blob/a23b7b8cc30232c3adeb2cfe80556333f86b2e71/guides/inference-scheduling/ms-inference-scheduling/values.yaml#L17-L22)
 
 
 ## Overview
