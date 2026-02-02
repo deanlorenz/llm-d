@@ -190,7 +190,7 @@ To run benchmarks against the installed llm-d stack, you need [run_only.sh](http
 
 ### Example
 
-This example uses [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh) with the template [precise_template.yaml](../benchmark/precise_template.yaml).
+This example uses [run_only.sh](https://github.com/llm-d/llm-d-benchmark/blob/main/existing_stack/run_only.sh) with the template [precise_guide_template.yaml](../benchmark/precise_guide_template.yaml).
 
 The benchmark launches a pod (`llmdbench-harness-launcher`) that, in this case, uses `inference-perf` with a shared prefix synthetic workload named `shared_prefix_synthetic`. This workload runs several stages with different rates. The results will be stored on the provided PVC, accessible through the `llmdbench-harness-launcher` pod. Each experiment is saved under the `requests` folder, e.g.,/`requests/inference-perf_<experiment ID>_shared_prefix_precise-guide-<model name>` folder.
 
@@ -210,13 +210,13 @@ The `bash` commands below downloads the benchmark runner script (`run_only.sh`),
   done
   ```
 
-Choose the `precise_template.yaml` template, then run:
+Choose the `precise_guide_template.yaml` template, then run:
 
   ```bash
   export NAMESPACE=llm-d-precise     # replace with your namespace
   export BENCHMARK_PVC=workload-pvc   # replace with your PVC name
   export GATEWAY_SVC=infra-kv-events-inference-gateway-istio  # replace with your exact service name
-  envsubst < precise_template.yaml > config.yaml
+  envsubst < precise_guide_template.yaml > config.yaml
   ```
 
 Edit `config.yaml` if further customization is needed, and then run the command

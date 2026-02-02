@@ -71,7 +71,7 @@ For full, customizable benchmarking, please refer to [llm-d-benchmark](https://g
 >   --no-headers  -o=custom-columns=:metadata.name \
 >   | head -1
 > )
-> export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/inference_scheduling_template.yaml
+> export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/inference_scheduling_sanity_template.yaml
 > # export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/inference_scheduling_guidellm_template.yaml
 > # export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/inference_scheduling_shared_prefix_template.yaml
 >   ```
@@ -89,6 +89,8 @@ For full, customizable benchmarking, please refer to [llm-d-benchmark](https://g
 >   --no-headers  -o=custom-columns=:metadata.name \
 >   | head -1
 > )
+> export GATEWAY_IP=$(kubectl get gateway/llm-d-inference-gateway -n ${NAMESPACE} \
+>   -o jsonpath='{.status.addresses[0].value}')
 > export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/pd_template.yaml
 > #export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/pd_vllm_bench_random_concurrent_template.yaml
 > #export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/pd_shared_prefix_template.yaml
@@ -133,7 +135,7 @@ For full, customizable benchmarking, please refer to [llm-d-benchmark](https://g
 >   --no-headers  -o=custom-columns=:metadata.name \
 >   | head -1
 > )
-> export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/precise_template.yaml
+> export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/precise_sanity_template.yaml
 > # export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/precise_guidellm_template.yaml
 > # export BENCHMARK_TEMPLATE="${BENCH_TEMPLATE_DIR}"/precise_shared_prefix_template.yaml
 >   ```
